@@ -1,16 +1,5 @@
-// Copyright 2018 Cargill Incorporated
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (c) The dgc.network
+// SPDX-License-Identifier: Apache-2.0
 
 extern crate addresser;
 #[macro_use]
@@ -87,7 +76,7 @@ fn run() -> Result<(), CliError> {
     let matches = clap_app!(myapp =>
         (name: APP_NAME)
         (version: VERSION)
-        (author: "Cargill")
+        (author: "dgc.network")
         (about: "Sawtooth Pike CLI")
         (@arg url: --url +takes_value "Rest api url")
         (@setting SubcommandRequiredElseHelp)
@@ -190,7 +179,7 @@ fn run() -> Result<(), CliError> {
 
             let private_key = load_signing_key(key_name)?;
 
-            let context = signing::create_context("secp256k1")?;
+            //let context = signing::create_context("secp256k1")?;
 
             let payload = create_agent_payload(org_id, public_key, roles, metadata);
             do_create(&url, &private_key, &payload, &output)?;
@@ -241,7 +230,7 @@ fn run() -> Result<(), CliError> {
 
             let private_key = load_signing_key(key_name)?;
 
-            let context = signing::create_context("secp256k1")?;
+            //let context = signing::create_context("secp256k1")?;
             let payload = update_agent_payload(org_id, public_key, roles, metadata);
             do_create(&url, &private_key, &payload, &output)?;
         }

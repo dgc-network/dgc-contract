@@ -1,24 +1,6 @@
-// Copyright 2018 Cargill Incorporated
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (c) The dgc.network
+// SPDX-License-Identifier: Apache-2.0
 
-//#![feature(proc_macro_hygiene, decl_macro)]
-
-//#[macro_use] extern crate rocket;
-
-//extern crate rocket;
-
-//use rocket_contrib::Json;
 use rocket_contrib::json::{Json, JsonValue};
 use rocket::http::Status;
 use rocket::response::status::Custom;
@@ -56,10 +38,8 @@ pub fn submit_txns_wait(
             .all(|x| x.status == "COMMITTED") {
 
         Ok(Custom(Status::Created, Json(batch_status_list)))
-        //Ok(Custom(Status::Created, batch_status_list))
     } else {
         Ok(Custom(Status::Accepted, Json(batch_status_list)))
-        //Ok(Custom(Status::Accepted, batch_status_list))
     }
 }
 
@@ -72,7 +52,6 @@ pub fn submit_txns(
     submit_batches(&mut conn.clone(), &data, 0)
         .map_err(map_error)
         .and_then(|b| Ok(Json(b)))
-        //.and_then(|b| Ok(b))
 }
 
 //#[get("/batch_status?<query>")]
@@ -92,7 +71,6 @@ pub fn get_batch_status(
     check_batch_status(&mut conn.clone(), ids, wait)
         .map_err(map_error)
         .and_then(|b| Ok(Json(b)))
-        //.and_then(|b| Ok(b))
 }
 
 fn map_error(err: error) -> Custom<JsonValue> {

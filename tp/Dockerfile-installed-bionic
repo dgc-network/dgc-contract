@@ -31,7 +31,7 @@ RUN /root/.cargo/bin/cargo install cargo-deb
 
 COPY . /project
 
-WORKDIR /project/contracts/sawtooth-pike/tp
+WORKDIR /project/tp
 
 RUN export VERSION=$(../../../bin/get_version) \
  && sed -i -e s/version.*$/version\ =\ \"${VERSION}\"/ Cargo.toml \
