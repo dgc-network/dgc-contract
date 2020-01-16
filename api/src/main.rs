@@ -73,7 +73,7 @@ fn internal_server_error(_: &rocket::Request) -> JsonValue {
     };
 */
 fn main() -> Result<(), Error> {
-    let hello = rocket_cors::CorsOptions {
+    let cors = rocket_cors::CorsOptions {
         allowed_origins: AllowedOrigins::all(),
         allowed_methods: vec![Method::Get, Method::Post, Method::Options].into_iter().map(From::from).collect(),
         allowed_headers: AllowedHeaders::some(&["Authorization", "Accept", "Content-Type"]),
@@ -110,8 +110,8 @@ fn main() -> Result<(), Error> {
         .manage(pools::init_pg_pool(database_url))
         .manage(ZmqMessageConnection::new(&validator_url))
         //.attach(options)
-        //.attach(cors)
-        .attach(hello)
+        .attach(cors)
+        //.attach(hello)
         //.catch(errors![not_found, internal_server_error])
         //.register(catchers![internal_error, not_found])
     .launch();
