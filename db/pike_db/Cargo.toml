@@ -4,7 +4,7 @@
 [package]
 name = "pike_db"
 version = "0.0.0"
-authors = ["Cargill, Incorporated"]
+authors = ["dgc.network"]
 
 [dependencies]
 serde = "1.0"
