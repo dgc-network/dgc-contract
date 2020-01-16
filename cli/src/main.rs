@@ -45,7 +45,7 @@ use protobuf::Message;
 
 fn do_create(
         url: &str,
-        private_key: &PrivateKey,
+        private_key: &dyn PrivateKey,
         payload: &PikePayload,
         output: &str) -> Result<(), CliError> {
 
