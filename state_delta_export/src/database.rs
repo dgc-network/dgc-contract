@@ -100,7 +100,7 @@ fn set_org(conn: &PgConnection, org: &Organization) -> Result<(), StateChangeErr
 pub enum StateChangeError {
     UnsupportedTypeError(String),
     ResourceError(ResourceError),
-    UnsupportedResourceError(String),
+    //UnsupportedResourceError(String),
     SqlQueryError(QueryError),
     ParseError(protobuf::ProtobufError),
     SetErrors(Vec<StateChangeError>)
