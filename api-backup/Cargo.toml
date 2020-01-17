@@ -1,0 +1,28 @@
+# Copyright (c) The dgc.network
+# SPDX-License-Identifier: Apache-2.0
+
+[package]
+name = "pike-api"
+version = "0.0.0"
+authors = ["dgc.network"]
+
+[dependencies]
+rocket = "0.4.2"
+#rocket_codegen = "0.4.2"
+rocket_cors = "0.5.1"
+serde = "1.0"
+serde_yaml = "0.7"
+serde_json = "1.0"
+serde_derive = "1.0"
+sawtooth-sdk = {git = "https://github.com/hyperledger/sawtooth-sdk-rust"}
+pike_db = { path = "../db/pike_db/" }
+protobuf = "2"
+uuid = { version = "0.5", features = ["v4"] }
+
+[dependencies.rocket_contrib]
+version = "*"
+default-features = false
+features = ["json"]
+
+[build-dependencies]
+protoc-rust = "2"

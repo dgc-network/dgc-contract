@@ -1,21 +1,9 @@
-// Copyright 2018 Cargill Incorporated
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (c) The dgc.network
+// SPDX-License-Identifier: Apache-2.0
 
-#![feature(plugin, decl_macro, custom_derive)]
-#![plugin(rocket_codegen)]
+#![feature(proc_macro_hygiene, decl_macro)]
 
-extern crate rocket;
+#[macro_use] extern crate rocket;
 extern crate rocket_cors;
 #[macro_use] extern crate rocket_contrib;
 #[macro_use] extern crate serde_derive;
@@ -34,8 +22,10 @@ mod submit;
 
 use std::env;
 use rocket::http::Method;
-use rocket_cors::{AllowedOrigins, AllowedHeaders};
-use rocket_contrib::Json;
+//use rocket_cors::{AllowedOrigins, AllowedHeaders};
+use rocket_cors::{AllowedOrigins, AllowedHeaders, Error};
+//use rocket_contrib::Json;
+use rocket_contrib::json::JsonValue;
 use routes::{agents, organizations};
 use pike_db::pools;
 use routes::transactions;
@@ -47,21 +37,30 @@ fn hello() -> &'static str {
     "Hello, world!"
 }
 
-#[error(404)]
-fn not_found(_: &rocket::Request) -> Json {
-    Json(json!({
+//#[error(404)]
+#[catch(404)]
+fn not_found(_: &rocket::Request) -> JsonValue {
+//    Json(json!({
+//        "message": "Not Found"
+//    }))
+    json!({
         "message": "Not Found"
-    }))
+    })
 }
 
-#[error(500)]
-fn internal_server_error(_: &rocket::Request) -> Json {
-    Json(json!({
+//#[error(500)]
+#[catch(500)]
+fn internal_server_error(_: &rocket::Request) -> JsonValue {
+//    Json(json!({
+//        "message": "Internal Server Error"
+//    }))
+    json!({
         "message": "Internal Server Error"
-    }))
+    })
 }
 
-fn main() {
+//fn main() {
+/*
     let (allowed_origins, failed_origins) = AllowedOrigins::some(&["http://localhost:9002"]);
     assert!(failed_origins.is_empty());
 
@@ -72,6 +71,17 @@ fn main() {
         allow_credentials: true,
         ..Default::default()
     };
+*/
+fn main() -> Result<(), Error> {
+    let cors = rocket_cors::CorsOptions {
+        allowed_origins: AllowedOrigins::all(),
+        allowed_methods: vec![Method::Get, Method::Post, Method::Options].into_iter().map(From::from).collect(),
+        allowed_headers: AllowedHeaders::some(&["Authorization", "Accept", "Content-Type"]),
+        allow_credentials: true,
+        ..Default::default()
+    }
+    .to_cors()?;
+    //.to_cors();
 
     let database_url = if let Ok(s) = env::var("DATABASE_URL") {
         s
@@ -99,7 +109,12 @@ fn main() {
                transactions::get_batch_status])
         .manage(pools::init_pg_pool(database_url))
         .manage(ZmqMessageConnection::new(&validator_url))
-        .attach(options)
-        .catch(errors![not_found, internal_server_error])
-        .launch();
+        //.attach(options)
+        .attach(cors)
+        //.attach(hello)
+        //.catch(errors![not_found, internal_server_error])
+        //.register(catchers![internal_error, not_found])
+    .launch();
+    
+    Ok(())
 }
