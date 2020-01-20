@@ -1,7 +1,18 @@
-# Copyright (c) The dgc.network
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2018 Cargill Incorporated
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-# docker build -f cli/Dockerfile-installed-bionic -t sawtooth-pike-cli .
+# docker build -f contracts/sawtooth-pike/cli/Dockerfile-installed-bionic -t sawtooth-pike-cli .
 
 # -------------=== pike cli build ===-------------
 
@@ -31,7 +42,7 @@ RUN /root/.cargo/bin/cargo install cargo-deb
 
 COPY . /project
 
-WORKDIR /project/cli
+WORKDIR /project/contracts/sawtooth-pike/cli
 
 RUN export VERSION=$(../../../bin/get_version) \
  && sed -i -e s/version.*$/version\ =\ \"${VERSION}\"/ Cargo.toml \
@@ -41,7 +52,7 @@ RUN export VERSION=$(../../../bin/get_version) \
 
 FROM ubuntu:bionic
 
-COPY --from=pike-cli-builder /project/cli/target/debian/pike-cli*.deb /tmp
+COPY --from=pike-cli-builder /project/contracts/sawtooth-pike/cli/target/debian/pike-cli*.deb /tmp
 
 RUN apt-get update \
  && apt-get install gnupg -y

@@ -18,11 +18,8 @@ version = "0.0.0"
 authors = ["Cargill, Incorporated"]
 
 [dependencies]
-#rocket = "0.3.3"
-#rocket_codegen = "0.3.8"
-#rocket_cors = "0.2.0"
 rocket = "0.4.2"
-#rocket_codegen = "0.4.2"
+#rocket_codegen = "0.3.8"
 rocket_cors = "0.5.1"
 serde = "1.0"
 serde_yaml = "0.7"

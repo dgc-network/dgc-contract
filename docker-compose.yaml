@@ -1,10 +1,18 @@
-# Copyright (c) The dgc.network
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2018 Cargill Incorporated
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 version: "2.1"
-
-volumes:
-  keys:
 
 services:
   validator:
@@ -94,7 +102,7 @@ services:
       tail -f /dev/null \
       \""
     build:
-      context: api/
+      context: ./api/
     environment:
       RUST_BACKTRACE: 1
       ROCKET_ADDRESS: "0.0.0.0"
@@ -113,7 +121,7 @@ services:
       - 9002:80
     build:
       context: .
-      dockerfile: api/Dockerfile-swagger-ui
+      dockerfile: ./api/Dockerfile-swagger-ui
 
   pike-db:
     image: pike-db
@@ -127,7 +135,7 @@ services:
     ports:
       - 5432:5432
     build:
-      context: db/
+      context: ./db/
 
   pike-adminer:
     image: adminer
@@ -149,7 +157,7 @@ services:
       - .:/project
       - ./keys:/root/.sawtooth/keys
     build:
-      context: cli
+      context: ./cli
 
   pike-tp:
     image: pike-tp
@@ -162,7 +170,7 @@ services:
     volumes:
       - .:/project
     build:
-      context: tp
+      context: ./tp
 
   pike-sde-service:
     image: pike-sde-service
@@ -176,7 +184,7 @@ services:
     volumes:
       - .:/project
     build:
-      context: state_delta_export/
+      context: ./state_delta_export/
     depends_on:
       - validator
       - rest-api

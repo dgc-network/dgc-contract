@@ -1,5 +1,16 @@
-// Copyright (c) The dgc.network
-// SPDX-License-Identifier: Apache-2.0
+// Copyright 2018 Cargill Incorporated
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 use protobuf;
 use crypto::digest::Digest;
@@ -43,11 +54,11 @@ fn compute_address(name: &str, resource: Resource) -> String {
 }
 
 pub struct PikeState<'a> {
-    context: &'a mut dyn TransactionContext,
+    context: &'a mut TransactionContext,
 }
 
 impl<'a> PikeState<'a> {
-    pub fn new(context: &'a mut dyn TransactionContext) -> PikeState {
+    pub fn new(context: &'a mut TransactionContext) -> PikeState {
         PikeState { context: context }
     }
 
