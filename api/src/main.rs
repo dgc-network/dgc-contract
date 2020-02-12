@@ -4,8 +4,10 @@
 //#![feature(plugin, decl_macro, custom_derive)]
 //#![plugin(rocket_codegen)]
 
+//#![feature(proc_macro_hygiene, decl_macro)]
 #![feature(proc_macro_derive, decl_macro)]
 
+#[macro_use] extern crate rocket;
 extern crate rocket;
 extern crate rocket_cors;
 #[macro_use] extern crate rocket_contrib;
@@ -26,7 +28,7 @@ mod submit;
 use std::env;
 use rocket::http::Method;
 use rocket_cors::{AllowedOrigins, AllowedHeaders};
-use rocket_contrib::Json;
+use rocket_contrib::json::Json;
 use routes::{agents, organizations};
 use pike_db::pools;
 use routes::transactions;
@@ -38,14 +40,16 @@ fn hello() -> &'static str {
     "Hello, world!"
 }
 
-#[error(404)]
+//#[error(404)]
+#[catch(404)]
 fn not_found(_: &rocket::Request) -> Json {
     Json(json!({
         "message": "Not Found"
     }))
 }
 
-#[error(500)]
+//#[error(500)]
+#[catch(500)]
 fn internal_server_error(_: &rocket::Request) -> Json {
     Json(json!({
         "message": "Internal Server Error"
