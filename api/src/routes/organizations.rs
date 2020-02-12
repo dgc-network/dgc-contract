@@ -10,7 +10,7 @@ use pike_db as db;
 use pike_db::models::Organization;
 
 #[get("/organization/<id>")]
-fn get_org(conn: DbConn, id: String) -> Option<Json<Organization>> {
+pub fn get_org(conn: DbConn, id: String) -> Option<Json<Organization>> {
     if let Ok(org) = db::get_org(&conn, &id) {
         Some(Json(org))
     } else {
@@ -19,7 +19,7 @@ fn get_org(conn: DbConn, id: String) -> Option<Json<Organization>> {
 }
 
 #[get("/organization")]
-fn get_orgs(conn: DbConn) -> Json<Vec<Organization>> {
+pub fn get_orgs(conn: DbConn) -> Json<Vec<Organization>> {
     if let Ok(orgs) = db::get_orgs(&conn) {
         Json(orgs)
     } else {

@@ -13,7 +13,7 @@ use serde_json::Value;
 const SWAGGER_FILENAME: &'static str = "openapi.yaml";
 
 #[get("/openapi.json")]
-fn openapi_json() -> String {
+pub fn openapi_json() -> String {
     let mut file = File::open(SWAGGER_FILENAME).unwrap();
     let mut contents = String::new();
     file.read_to_string(&mut contents).unwrap();
@@ -25,7 +25,7 @@ fn openapi_json() -> String {
 }
 
 #[get("/openapi.yaml")]
-fn openapi_yaml() -> String {
+pub fn openapi_yaml() -> String {
     let mut file = File::open(SWAGGER_FILENAME).unwrap();
     let mut contents = String::new();
     file.read_to_string(&mut contents).unwrap();

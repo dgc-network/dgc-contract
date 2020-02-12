@@ -4,11 +4,11 @@
 //#![feature(plugin, decl_macro, custom_derive)]
 //#![plugin(rocket_codegen)]
 
-//#![feature(proc_macro_hygiene, decl_macro)]
 #![feature(proc_macro_derive, decl_macro)]
+#![feature(proc_macro_hygiene)]
 
 #[macro_use] extern crate rocket;
-extern crate rocket;
+//extern crate rocket;
 extern crate rocket_cors;
 #[macro_use] extern crate rocket_contrib;
 #[macro_use] extern crate serde_derive;
@@ -95,6 +95,7 @@ fn main() {
         .manage(pools::init_pg_pool(database_url))
         .manage(ZmqMessageConnection::new(&validator_url))
         .attach(options)
-        .catch(errors![not_found, internal_server_error])
+        //.catch(errors![not_found, internal_server_error])
+        .catch(error_![not_found, internal_server_error])
         .launch();
 }
