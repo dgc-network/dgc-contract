@@ -28,7 +28,7 @@ mod submit;
 use std::env;
 use rocket::http::Method;
 use rocket_cors::{AllowedOrigins, AllowedHeaders};
-use rocket_contrib::json::Json;
+use rocket_contrib::json::{Json, JsonValue};
 use routes::{agents, organizations};
 use pike_db::pools;
 use routes::transactions;
@@ -42,7 +42,7 @@ fn hello() -> &'static str {
 
 //#[error(404)]
 #[catch(404)]
-fn not_found(_: &rocket::Request) -> Json {
+fn not_found(_: &rocket::Request) -> Json<JsonValue> {
     Json(json!({
         "message": "Not Found"
     }))
@@ -50,23 +50,26 @@ fn not_found(_: &rocket::Request) -> Json {
 
 //#[error(500)]
 #[catch(500)]
-fn internal_server_error(_: &rocket::Request) -> Json {
+fn internal_server_error(_: &rocket::Request) -> Json<JsonValue> {
     Json(json!({
         "message": "Internal Server Error"
     }))
 }
 
 fn main() {
-    let (allowed_origins, failed_origins) = AllowedOrigins::some(&["http://localhost:9002"]);
-    assert!(failed_origins.is_empty());
+    //let (allowed_origins, failed_origins) = AllowedOrigins::some(&["http://localhost:9002"]);
+    //assert!(failed_origins.is_empty());
 
-    let options = rocket_cors::Cors {
-        allowed_origins: allowed_origins,
+    //let options = rocket_cors::Cors {
+    let options = rocket_cors::CorsOptions {
+        //allowed_origins: allowed_origins,
+        allowed_origins: AllowedOrigins::all(),
         allowed_methods: vec![Method::Get, Method::Post, Method::Options].into_iter().map(From::from).collect(),
         allowed_headers: AllowedHeaders::some(&["Authorization", "Accept", "Content-Type"]),
         allow_credentials: true,
         ..Default::default()
-    };
+    }
+    .to_cors()?;
 
     let database_url = if let Ok(s) = env::var("DATABASE_URL") {
         s
@@ -96,6 +99,5 @@ fn main() {
         .manage(ZmqMessageConnection::new(&validator_url))
         .attach(options)
         //.catch(errors![not_found, internal_server_error])
-        .catch(error_![not_found, internal_server_error])
         .launch();
 }
