@@ -99,6 +99,7 @@ fn main() -> Result<(), Error> {
         .manage(ZmqMessageConnection::new(&validator_url))
         .attach(options)
         //.catch(errors![not_found, internal_server_error])
+        .catch(catchers![not_found, internal_server_error])
         .launch();
 
     Ok(())
