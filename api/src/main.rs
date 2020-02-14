@@ -4,8 +4,8 @@
 //#![feature(plugin, decl_macro, custom_derive)]
 //#![plugin(rocket_codegen)]
 
-#![feature(proc_macro_derive, decl_macro)]
-#![feature(proc_macro_hygiene)]
+//#![feature(proc_macro_derive, decl_macro)]
+#![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use] extern crate rocket;
 //extern crate rocket;

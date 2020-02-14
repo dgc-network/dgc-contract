@@ -1,7 +1,7 @@
 // Copyright (c) The dgc.network
 // SPDX-License-Identifier: Apache-2.0
 
-extern crate rocket;
+//extern crate rocket;
 
 use rocket_contrib::json::{Json, JsonValue};
 use rocket::http::Status;
@@ -9,23 +9,24 @@ use rocket::response::status::Custom;
 use guard::validator_conn::ValidatorConn;
 use submit::{submit_batches, check_batch_status, BatchStatus};
 use submit::TransactionError as error;
+use rocket::request::Form;
 
 #[derive(FromForm)]
-struct TxnQuery {
+pub struct TxnQuery {
     wait: u32
 }
 
 #[derive(FromForm)]
-struct StatusQuery {
+pub struct StatusQuery {
     wait: Option<u32>,
     ids: String
 }
 
-#[post("/batches?<query>", format = "application/octet-stream", data = "<data>")]
+#[post("/batches?<query..>", format = "application/octet-stream", data = "<data>")]
 pub fn submit_txns_wait(
     conn: ValidatorConn,
     data: Vec<u8>,
-    query: TxnQuery
+    query: Form<TxnQuery>
 ) -> Result<Custom<Json<Vec<BatchStatus>>>, Custom<Json<JsonValue>>> {
 
     let batch_status_list = submit_batches(&mut conn.clone(), &data, query.wait)
@@ -52,10 +53,10 @@ pub fn submit_txns(
         .and_then(|b| Ok(Json(b)))
 }
 
-#[get("/batch_status?<query>")]
+#[get("/batch_status?<query..>")]
 pub fn get_batch_status(
     conn: ValidatorConn,
-    query: StatusQuery
+    query: Form<StatusQuery>
 ) -> Result<Json<Vec<BatchStatus>>, Custom<Json<JsonValue>>> {
 
     let wait = query.wait.unwrap_or(0);
