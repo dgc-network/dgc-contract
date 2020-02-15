@@ -38,7 +38,7 @@ use payload::{
 };
 use submit::submit_batch_list;
 
-use protos::payload::PikePayload;
+use protos::payload::SmartPayload;
 use protos::state::KeyValueEntry;
 
 use protobuf::Message;
@@ -46,7 +46,7 @@ use protobuf::Message;
 fn do_create(
         url: &str,
         private_key: &dyn PrivateKey,
-        payload: &PikePayload,
+        payload: &SmartPayload,
         output: &str) -> Result<(), CliError> {
 
     if !output.is_empty() {

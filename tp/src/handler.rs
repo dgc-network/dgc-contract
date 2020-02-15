@@ -21,13 +21,13 @@ cfg_if! {
 }
 
 use protos::payload::{CreateAgentAction, CreateOrganizationAction,
-                      PikePayload,
-                      PikePayload_Action as Action, UpdateAgentAction,
+                      SmartPayload,
+                      SmartPayload_Action as Action, UpdateAgentAction,
                       UpdateOrganizationAction};
 use protos::state::{Agent, AgentList, Organization, OrganizationList};
 use addresser::{resource_to_byte, Resource};
 
-pub struct PikeTransactionHandler {
+pub struct SmartTransactionHandler {
     family_name: String,
     family_versions: Vec<String>,
     namespaces: Vec<String>,
@@ -42,13 +42,13 @@ fn compute_address(name: &str, resource: Resource) -> String {
     String::from(NAMESPACE) + &resource_to_byte(resource) + &sha.result_str()[..62].to_string()
 }
 
-pub struct PikeState<'a> {
+pub struct SmartState<'a> {
     context: &'a mut dyn TransactionContext,
 }
 
-impl<'a> PikeState<'a> {
-    pub fn new(context: &'a mut dyn TransactionContext) -> PikeState {
-        PikeState { context: context }
+impl<'a> SmartState<'a> {
+    pub fn new(context: &'a mut dyn TransactionContext) -> SmartState {
+        SmartState { context: context }
     }
 
     pub fn get_agent(&mut self, public_key: &str) -> Result<Option<Agent>, ApplyError> {
@@ -209,9 +209,9 @@ impl<'a> PikeState<'a> {
     }
 }
 
-impl PikeTransactionHandler {
-    pub fn new() -> PikeTransactionHandler {
-        PikeTransactionHandler {
+impl SmartTransactionHandler {
+    pub fn new() -> SmartTransactionHandler {
+        SmartTransactionHandler {
             family_name: "dgc".to_string(),
             family_versions: vec!["0.1".to_string()],
             namespaces: vec![NAMESPACE.to_string()],
@@ -219,7 +219,7 @@ impl PikeTransactionHandler {
     }
 }
 
-impl TransactionHandler for PikeTransactionHandler {
+impl TransactionHandler for SmartTransactionHandler {
     fn family_name(&self) -> String {
         return self.family_name.clone();
     }
@@ -237,11 +237,11 @@ impl TransactionHandler for PikeTransactionHandler {
         request: &TpProcessRequest,
         context: &mut dyn TransactionContext,
     ) -> Result<(), ApplyError> {
-        let payload = protobuf::parse_from_bytes::<PikePayload>(request.get_payload())
+        let payload = protobuf::parse_from_bytes::<SmartPayload>(request.get_payload())
             .map_err(|_| ApplyError::InternalError("Failed to parse payload".into()))?;
 
         let signer = request.get_header().get_signer_public_key();
-        let mut state = PikeState::new(context);
+        let mut state = SmartState::new(context);
 
         #[cfg(not(target_arch = "wasm32"))]
         info!(
@@ -268,7 +268,7 @@ impl TransactionHandler for PikeTransactionHandler {
 fn create_agent(
     payload: &CreateAgentAction,
     signer: &str,
-    state: &mut PikeState,
+    state: &mut SmartState,
 ) -> Result<(), ApplyError> {
     if payload.get_public_key().is_empty() {
         return Err(ApplyError::InvalidTransaction("Public key required".into()));
@@ -319,7 +319,7 @@ fn create_agent(
 fn update_agent(
     payload: &UpdateAgentAction,
     signer: &str,
-    state: &mut PikeState,
+    state: &mut SmartState,
 ) -> Result<(), ApplyError> {
     if payload.get_public_key().is_empty() {
         return Err(ApplyError::InvalidTransaction("Public key required".into()));
@@ -379,7 +379,7 @@ fn update_agent(
 fn create_org(
     payload: &CreateOrganizationAction,
     signer: &str,
-    state: &mut PikeState,
+    state: &mut SmartState,
 ) -> Result<(), ApplyError> {
     if payload.get_id().is_empty() {
         return Err(ApplyError::InvalidTransaction(
@@ -451,7 +451,7 @@ fn create_org(
 fn update_org(
     payload: &UpdateOrganizationAction,
     signer: &str,
-    state: &mut PikeState,
+    state: &mut SmartState,
 ) -> Result<(), ApplyError> {
     if payload.get_id().is_empty() {
         return Err(ApplyError::InvalidTransaction(
@@ -488,7 +488,7 @@ fn update_org(
     state.set_organization(payload.get_id(), organization)
 }
 
-pub fn is_admin(signer: &str, org_id: &str, state: &mut PikeState) -> Result<(), ApplyError> {
+pub fn is_admin(signer: &str, org_id: &str, state: &mut SmartState) -> Result<(), ApplyError> {
     let admin = match state.get_agent(signer) {
         Ok(None) => {
             return Err(ApplyError::InvalidTransaction(format!(
@@ -534,7 +534,7 @@ fn apply(
     context: &mut dyn TransactionContext,
 ) -> Result<bool, ApplyError> {
 
-    let handler = PikeTransactionHandler::new();
+    let handler = SmartTransactionHandler::new();
     match handler.apply(request, context) {
         Ok(_) => Ok(true),
         Err(err) => Err(err)

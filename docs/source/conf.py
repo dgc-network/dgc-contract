@@ -115,7 +115,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'dgcdoc'
+htmlhelp_basename = 'dgc_doc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -143,7 +143,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'dgc.tex', 'dgc Contract Documentation',
-     'Cargill', 'manual'),
+     'dgc.network', 'manual'),
 ]
 
 

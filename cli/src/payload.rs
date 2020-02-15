@@ -11,8 +11,8 @@ use protos::payload::{
     UpdateAgentAction,
     UpdateOrganizationAction
 };
-use protos::payload::PikePayload;
-use protos::payload::PikePayload_Action;
+use protos::payload::SmartPayload;
+use protos::payload::SmartPayload_Action;
 
 /// Creates a payload with a create agent action within
 ///
@@ -27,15 +27,15 @@ pub fn create_agent_payload(
     public_key: &str,
     roles: Vec<String>,
     metadata: Vec<KeyValueEntry>,
-) -> PikePayload {
+) -> SmartPayload {
     let mut create_agent = CreateAgentAction::new();
     create_agent.set_org_id(String::from(org_id));
     create_agent.set_public_key(String::from(public_key));
     create_agent.set_roles(protobuf::RepeatedField::from_vec(roles));
     create_agent.set_metadata(protobuf::RepeatedField::from_vec(metadata));
 
-    let mut payload = PikePayload::new();
-    payload.action = PikePayload_Action::CREATE_AGENT;
+    let mut payload = SmartPayload::new();
+    payload.action = SmartPayload_Action::CREATE_AGENT;
     payload.set_create_agent(create_agent);
     
     payload
@@ -54,15 +54,15 @@ pub fn update_agent_payload(
     public_key: &str,
     roles: Vec<String>,
     metadata: Vec<KeyValueEntry>,
-) -> PikePayload {
+) -> SmartPayload {
     let mut update_agent = UpdateAgentAction::new();
     update_agent.set_org_id(String::from(org_id));
     update_agent.set_public_key(String::from(public_key));
     update_agent.set_roles(protobuf::RepeatedField::from_vec(roles));
     update_agent.set_metadata(protobuf::RepeatedField::from_vec(metadata));
 
-    let mut payload = PikePayload::new();
-    payload.action = PikePayload_Action::UPDATE_AGENT;
+    let mut payload = SmartPayload::new();
+    payload.action = SmartPayload_Action::UPDATE_AGENT;
     payload.set_update_agent(update_agent);
 
     payload
@@ -75,7 +75,7 @@ pub fn update_agent_payload(
 /// * `id` - Unique ID for organization
 /// * `name` - The organization's name
 /// * `address` - The physical address of the organization
-pub fn create_org_payload(id: &str, name: &str, address: Option<&str>) -> PikePayload {
+pub fn create_org_payload(id: &str, name: &str, address: Option<&str>) -> SmartPayload {
     let mut create_org = CreateOrganizationAction::new();
     create_org.set_id(String::from(id));
     create_org.set_name(String::from(name));
@@ -84,8 +84,8 @@ pub fn create_org_payload(id: &str, name: &str, address: Option<&str>) -> PikePa
         create_org.set_address(String::from(addr));
     }
 
-    let mut payload = PikePayload::new();
-    payload.action = PikePayload_Action::CREATE_ORGANIZATION;
+    let mut payload = SmartPayload::new();
+    payload.action = SmartPayload_Action::CREATE_ORGANIZATION;
     payload.set_create_organization(create_org);
 
     payload
@@ -98,7 +98,7 @@ pub fn create_org_payload(id: &str, name: &str, address: Option<&str>) -> PikePa
 /// * `id` - Unique ID for organization
 /// * `name` - The organization's name
 /// * `address` - The physical address of the organization
-pub fn update_org_payload(id: &str, name: &str, address: Option<&str>) -> PikePayload {
+pub fn update_org_payload(id: &str, name: &str, address: Option<&str>) -> SmartPayload {
     let mut update_org = UpdateOrganizationAction::new();
     update_org.set_id(String::from(id));
     update_org.set_name(String::from(name));
@@ -107,8 +107,8 @@ pub fn update_org_payload(id: &str, name: &str, address: Option<&str>) -> PikePa
         update_org.set_address(String::from(addr));
     }
 
-    let mut payload = PikePayload::new();
-    payload.action = PikePayload_Action::UPDATE_ORGANIZATION;
+    let mut payload = SmartPayload::new();
+    payload.action = SmartPayload_Action::UPDATE_ORGANIZATION;
     payload.set_update_organization(update_org);
 
     payload

@@ -124,7 +124,7 @@ buffers code:
 
 .. code-block:: protobuf
 
-    message PikePayload {
+    message SmartPayload {
         enum Action {
             ACTION_UNSET = 0;
 

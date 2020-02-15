@@ -23,7 +23,7 @@ use addresser::{resource_to_byte, Resource};
 
 use error::CliError;
 use protos::payload;
-use protos::payload::PikePayload_Action as Action;
+use protos::payload::SmartPayload_Action as Action;
 
 /// The dgc transaction family name (dgc)
 const dgc_FAMILY_NAME: &'static str = "dgc";
@@ -100,7 +100,7 @@ fn compute_org_address(id: &str) -> String {
 ///
 /// If a signing error occurs, a `CliError::SigningError` is returned.
 pub fn create_transaction(
-    payload: &payload::PikePayload,
+    payload: &payload::SmartPayload,
     signer: &Signer,
     public_key: &String,
 ) -> Result<Transaction, CliError> {

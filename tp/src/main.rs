@@ -20,7 +20,7 @@ cfg_if! {
 
         use log::LogLevel;
         use sawtooth_sdk::processor::TransactionProcessor;
-        use handler::PikeTransactionHandler;
+        use handler::SmartTransactionHandler;
     }
 }
 
@@ -28,7 +28,7 @@ pub mod handler;
 mod protos;
 
 //use sawtooth_sdk::processor::TransactionProcessor;
-//use handler::PikeTransactionHandler;
+//use handler::SmartTransactionHandler;
 
 #[cfg(not(target_arch = "wasm32"))]
 fn main() {
@@ -53,7 +53,7 @@ fn main() {
         .value_of("connect")
         .unwrap_or("tcp://localhost:4004");
 
-    let handler = PikeTransactionHandler::new();
+    let handler = SmartTransactionHandler::new();
     let mut processor = TransactionProcessor::new(connect);
 
     processor.add_handler(&handler);

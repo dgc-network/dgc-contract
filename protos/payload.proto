@@ -4,7 +4,7 @@
 syntax = "proto3";
 import "state.proto";
 
-message PikePayload {
+message SmartPayload {
   enum Action {
     ACTION_UNSET = 0;
 
