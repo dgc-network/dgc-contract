@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 [package]
-name = "pike-cli"
+name = "dgc-cli"
 version = "0.1.0"
 authors = ["dgc.network"]
 build = "build.rs"

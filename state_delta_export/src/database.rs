@@ -6,9 +6,9 @@ use protobuf;
 use sawtooth_sdk::messages::transaction_receipt::StateChange;
 use sawtooth_sdk::messages::transaction_receipt::StateChange_Type;
 
-use pike_db as db;
-use pike_db::{PgConnection, NotFound, QueryError};
-use pike_db::models::{NewAgent, NewOrganization};
+use dgc_db as db;
+use dgc_db::{PgConnection, NotFound, QueryError};
+use dgc_db::models::{NewAgent, NewOrganization};
 
 use addresser::{Resource, ResourceError, byte_to_resource};
 

@@ -2,14 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 [package]
-name = "pike-sde"
+name = "dgc-sde"
 version = "0.1.0"
 authors = ["dgc.network"]
 build = "build.rs"
 
 [dependencies]
 sawtooth-sdk = {git = "https://github.com/hyperledger/sawtooth-sdk-rust"}
-pike_db = { path = "../db/pike_db/" }
+dgc_db = { path = "../db/dgc_db/" }
 addresser = { path = "../addresser/" }
 log = "0.3.8"
 simple_logger = "0.4.0"

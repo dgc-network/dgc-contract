@@ -77,7 +77,7 @@ fn run() -> Result<(), CliError> {
         (name: APP_NAME)
         (version: VERSION)
         (author: "Cargill")
-        (about: "Sawtooth Pike CLI")
+        (about: "dgc Contract CLI")
         (@arg url: --url +takes_value "Rest api url")
         (@setting SubcommandRequiredElseHelp)
         (@subcommand agent =>
@@ -128,7 +128,7 @@ fn run() -> Result<(), CliError> {
 
     let url = matches
         .value_of("url")
-        .unwrap_or("http://pike-api:9001");
+        .unwrap_or("http://dgc-api:9001");
 
     if let Some(matches) = matches.subcommand_matches("agent") {
         if let Some(matches) = matches.subcommand_matches("create") {

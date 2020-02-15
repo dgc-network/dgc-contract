@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 [package]
-name = "pike-api"
+name = "dgc-api"
 version = "0.0.0"
 authors = ["dgc.network"]
 
@@ -15,7 +15,7 @@ serde_yaml = "0.7"
 serde_json = "1.0"
 serde_derive = "1.0"
 sawtooth-sdk = {git = "https://github.com/hyperledger/sawtooth-sdk-rust"}
-pike_db = { path = "../db/pike_db/" }
+dgc_db = { path = "../db/dgc_db/" }
 protobuf = "2"
 uuid = { version = "0.5", features = ["v4"] }
 

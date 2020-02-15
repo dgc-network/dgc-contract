@@ -6,8 +6,8 @@ extern crate rocket;
 use rocket_contrib::json::Json;
 use guard::db_conn::DbConn;
 
-use pike_db as db;
-use pike_db::models::Organization;
+use dgc_db as db;
+use dgc_db::models::Organization;
 
 #[get("/organization/<id>")]
 pub fn get_org(conn: DbConn, id: String) -> Option<Json<Organization>> {

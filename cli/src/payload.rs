@@ -1,7 +1,7 @@
 // Copyright (c) The dgc.network
 // SPDX-License-Identifier: Apache-2.0
 
-//! Functions to assist with Pike payload creation
+//! Functions to assist with dgc payload creation
 
 use protobuf;
 use protos::state::KeyValueEntry;

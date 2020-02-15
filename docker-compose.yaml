@@ -79,9 +79,9 @@ services:
       tail -f /dev/null \
       \""
 
-  pike-api:
-    image: pike-api
-    container_name: pike-api
+  dgc-api:
+    image: dgc-api
+    container_name: dgc-api
     volumes:
       - .:/project
     expose:
@@ -100,11 +100,11 @@ services:
       ROCKET_ADDRESS: "0.0.0.0"
       ROCKET_PORT: 9001
       VALIDATOR_URL: tcp://validator:9004
-      DATABASE_URL: postgres://pike:pike@pike-db:5432/pike
+      DATABASE_URL: postgres://dgc:dgc@dgc-db:5432/dgc
 
-  pike-swagger-ui:
-    image: pike-swagger-ui
-    container_name: pike-swagger-ui
+  dgc-swagger-ui:
+    image: dgc-swagger-ui
+    container_name: dgc-swagger-ui
     volumes:
       - .:/project
     expose:
@@ -115,31 +115,31 @@ services:
       context: .
       dockerfile: ./api/Dockerfile-swagger-ui
 
-  pike-db:
-    image: pike-db
-    container_name: pike-db
+  dgc-db:
+    image: dgc-db
+    container_name: dgc-db
     volumes:
       - .:/project
     environment:
-      POSTGRES_DB: pike
-      POSTGRES_USER: pike
-      POSTGRES_PASSWORD: pike
+      POSTGRES_DB: dgc
+      POSTGRES_USER: dgc
+      POSTGRES_PASSWORD: dgc
     ports:
       - 5432:5432
     build:
       context: ./db/
 
-  pike-adminer:
+  dgc-adminer:
     image: adminer
-    container_name: pike-adminer
+    container_name: dgc-adminer
     links:
-      - pike-db:db
+      - dgc-db:db
     ports:
       - 9003:8080
 
-  pike-client:
-    image: pike-client
-    container_name: pike-client
+  dgc-client:
+    image: dgc-client
+    container_name: dgc-client
     entrypoint: "bash -c \"\
       cd /project/cli && \
       cargo build && \
@@ -151,28 +151,28 @@ services:
     build:
       context: ./cli
 
-  pike-tp:
-    image: pike-tp
-    container_name: pike-tp
+  dgc-tp:
+    image: dgc-tp
+    container_name: dgc-tp
     entrypoint: "bash -c \"\
         cd /project/tp/ && \
         cargo build && \
-        pike -vv -C tcp://validator:9004
+        dgc -vv -C tcp://validator:9004
         \""
     volumes:
       - .:/project
     build:
       context: ./tp
 
-  pike-sde-service:
-    image: pike-sde-service
-    container_name: pike-sde-service
+  dgc-sde-service:
+    image: dgc-sde-service
+    container_name: dgc-sde-service
     environment:
-      DATABASE_URL: postgres://pike:pike@pike-db:5432/pike
+      DATABASE_URL: postgres://dgc:dgc@dgc-db:5432/dgc
     entrypoint: "bash -c \"
       cd /project/state_delta_export && \
       cargo build && \
-      pike-sde -vv -c tcp://validator:9004 \""
+      dgc-sde -vv -c tcp://validator:9004 \""
     volumes:
       - .:/project
     build:
@@ -180,4 +180,4 @@ services:
     depends_on:
       - validator
       - rest-api
-      - pike-db
+      - dgc-db

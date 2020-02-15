@@ -1,7 +1,7 @@
 // Copyright (c) The dgc.network
 // SPDX-License-Identifier: Apache-2.0
 
-//! Contains functions which assist with the creation of Pike Batches and
+//! Contains functions which assist with the creation of dgc Batches and
 //! Transactions
 
 use std::time::Instant;
@@ -25,14 +25,14 @@ use error::CliError;
 use protos::payload;
 use protos::payload::PikePayload_Action as Action;
 
-/// The Pike transaction family name (pike)
-const PIKE_FAMILY_NAME: &'static str = "pike";
+/// The dgc transaction family name (dgc)
+const dgc_FAMILY_NAME: &'static str = "dgc";
 
-/// The Pike transaction family version (0.1)
-const PIKE_FAMILY_VERSION: &'static str = "0.1";
+/// The dgc transaction family version (0.1)
+const dgc_FAMILY_VERSION: &'static str = "0.1";
 
-/// The Pike namespace prefix for global state (cad11d)
-const PIKE_NAMESPACE: &'static str = "cad11d";
+/// The dgc namespace prefix for global state (cad11d)
+const dgc_NAMESPACE: &'static str = "cad11d";
 
 /// Creates a nonce appropriate for a TransactionHeader
 fn create_nonce() -> String {
@@ -64,7 +64,7 @@ fn compute_agent_address(name: &str) -> String {
     sha.input(name.as_bytes());
     sha.result(hash);
 
-    String::from(PIKE_NAMESPACE) + &resource_to_byte(Resource::AGENT)
+    String::from(dgc_NAMESPACE) + &resource_to_byte(Resource::AGENT)
         + &bytes_to_hex_str(hash)[..62]
 }
 
@@ -80,7 +80,7 @@ fn compute_org_address(id: &str) -> String {
     sha.input(id.as_bytes());
     sha.result(hash);
 
-    String::from(PIKE_NAMESPACE) + &resource_to_byte(Resource::ORG)
+    String::from(dgc_NAMESPACE) + &resource_to_byte(Resource::ORG)
         + &bytes_to_hex_str(hash)[..62]
 }
 
@@ -88,7 +88,7 @@ fn compute_org_address(id: &str) -> String {
 ///
 /// # Arguments
 ///
-/// * `payload` - a fully populated pike payload
+/// * `payload` - a fully populated dgc payload
 /// * `signer` - the signer to be used to sign the transaction
 /// * `public_key` - the public key associated with the signer
 ///
@@ -107,8 +107,8 @@ pub fn create_transaction(
     let mut txn = Transaction::new();
     let mut txn_header = TransactionHeader::new();
 
-    txn_header.set_family_name(String::from(PIKE_FAMILY_NAME));
-    txn_header.set_family_version(String::from(PIKE_FAMILY_VERSION));
+    txn_header.set_family_name(String::from(dgc_FAMILY_NAME));
+    txn_header.set_family_version(String::from(dgc_FAMILY_VERSION));
     txn_header.set_nonce(create_nonce());
     txn_header.set_signer_public_key(public_key.clone());
     txn_header.set_batcher_public_key(public_key.clone());
@@ -146,7 +146,7 @@ pub fn create_transaction(
                 compute_agent_address(public_key),
             ])
         }
-        _ => protobuf::RepeatedField::from_vec(vec![String::from(PIKE_NAMESPACE)]),
+        _ => protobuf::RepeatedField::from_vec(vec![String::from(dgc_NAMESPACE)]),
     };
 
     txn_header.set_inputs(addresses.clone());

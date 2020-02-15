@@ -5,8 +5,8 @@ use std::ops::Deref;
 use rocket::http::Status;
 use rocket::request::{self, FromRequest};
 use rocket::{Request, State, Outcome};
-use pike_db::pools::PgPool;
-use pike_db::{
+use dgc_db::pools::PgPool;
+use dgc_db::{
     PgConnection,
     ConnectionManager,
     PooledConnection

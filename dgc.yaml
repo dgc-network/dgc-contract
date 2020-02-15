@@ -1,9 +1,9 @@
 # Copyright (c) The dgc.network
 # SPDX-License-Identifier: Apache-2.0
 
-name: pike
+name: dgc
 version: '1.0'
-wasm: tp/target/wasm32-unknown-unknown/release/pike.wasm
+wasm: tp/target/wasm32-unknown-unknown/release/dgc.wasm
 inputs:
   - 'cad11d'
 outputs:

@@ -5,7 +5,7 @@ openapi: '3.0.0'
 info:
   description: ''
   version: 0.0.0
-  title: Sawtooth Pike API
+  title: dgc Contract API
 host: localhost:9001
 basePath: /
 server:

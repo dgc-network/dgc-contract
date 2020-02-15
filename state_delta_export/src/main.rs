@@ -5,7 +5,7 @@
 #[macro_use] extern crate log;
 #[macro_use] extern crate serde_json;
 extern crate sawtooth_sdk;
-extern crate pike_db;
+extern crate dgc_db;
 extern crate addresser;
 extern crate simple_logger;
 extern crate protobuf;
@@ -23,7 +23,7 @@ use subscriber::Subscriber;
 use log::LogLevel;
 use regex::Regex;
 use database::apply_state_change;
-use pike_db::pools::init_pg_pool;
+use dgc_db::pools::init_pg_pool;
 
 use sawtooth_sdk::messages::transaction_receipt::StateChangeList;
 
@@ -42,7 +42,7 @@ fn main() {
         (name: APP_NAME)
         (version: VERSION)
         (author: AUTHOR)
-        (about: "State delta export service for pike")
+        (about: "State delta export service for dgc")
         (@arg verbose: -v +multiple "Log verbosely")
         (@arg connect: -c  --connect +takes_value "Validator to connect to")
         (@arg db: -d --database +takes_value "Full url to database")

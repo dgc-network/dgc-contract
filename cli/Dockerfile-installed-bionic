@@ -1,11 +1,11 @@
 # Copyright (c) The dgc.network
 # SPDX-License-Identifier: Apache-2.0
 
-# docker build -f cli/Dockerfile-installed-bionic -t sawtooth-pike-cli .
+# docker build -f cli/Dockerfile-installed-bionic -t sawtooth-dgc-cli .
 
-# -------------=== pike cli build ===-------------
+# -------------=== dgc cli build ===-------------
 
-FROM ubuntu:bionic as pike-cli-builder
+FROM ubuntu:bionic as dgc-cli-builder
 
 ENV VERSION=AUTO_STRICT
 
@@ -37,11 +37,11 @@ RUN export VERSION=$(../../../bin/get_version) \
  && sed -i -e s/version.*$/version\ =\ \"${VERSION}\"/ Cargo.toml \
  && /root/.cargo/bin/cargo deb --deb-version $VERSION
 
-# -------------=== pike cli docker build ===-------------
+# -------------=== dgc cli docker build ===-------------
 
 FROM ubuntu:bionic
 
-COPY --from=pike-cli-builder /project/cli/target/debian/pike-cli*.deb /tmp
+COPY --from=dgc-cli-builder /project/cli/target/debian/dgc-cli*.deb /tmp
 
 RUN apt-get update \
  && apt-get install gnupg -y
@@ -53,7 +53,7 @@ RUN echo "deb [arch=amd64] http://repo.sawtooth.me/ubuntu/nightly bionic univers
  && apt-get -f -y install \
     python3-sawtooth-cli \
     python3-sawtooth-sdk \
- && dpkg -i /tmp/pike-cli*.deb || true \
+ && dpkg -i /tmp/dgc-cli*.deb || true \
  && apt-get -f -y install
 
 ENTRYPOINT ["tail", "-f", "/dev/null"]

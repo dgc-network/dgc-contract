@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 [package]
-name = "pike_db"
+name = "dgc_db"
 version = "0.0.0"
 authors = ["dgc.network"]
 

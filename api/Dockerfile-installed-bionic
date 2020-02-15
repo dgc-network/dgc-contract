@@ -1,11 +1,11 @@
 # Copyright (c) The dgc.network
 # SPDX-License-Identifier: Apache-2.0
 
-# docker build -f api/Dockerfile-installed-bionic -t sawtooth-pike-api .
+# docker build -f api/Dockerfile-installed-bionic -t sawtooth-dgc-api .
 
-# -------------=== pike api build ===-------------
+# -------------=== dgc api build ===-------------
 
-FROM ubuntu:bionic as pike-api-builder
+FROM ubuntu:bionic as dgc-api-builder
 
 ENV VERSION=AUTO_STRICT
 
@@ -39,14 +39,14 @@ RUN export VERSION=$(../../../bin/get_version) \
  && sed -i -e "0,/version.*$/ s/version.*$/version\ =\ \"${VERSION}\"/" Cargo.toml \
  && /root/.cargo/bin/cargo deb --deb-version $VERSION
 
-# -------------=== pike api docker build ===-------------
+# -------------=== dgc api docker build ===-------------
 
 FROM ubuntu:bionic
 
-COPY --from=pike-api-builder /project/api/target/debian/pike-api*.deb /tmp
+COPY --from=dgc-api-builder /project/api/target/debian/dgc-api*.deb /tmp
 
 RUN apt-get update \
- && dpkg -i /tmp/pike-api*.deb || true \
+ && dpkg -i /tmp/dgc-api*.deb || true \
  && apt-get -f -y install
 
 ENTRYPOINT ["tail", "-f", "/dev/null"]

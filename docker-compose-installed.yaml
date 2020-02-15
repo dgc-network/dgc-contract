@@ -4,12 +4,12 @@
 version: "2.1"
 
 services:
-  pike-api:
-    image: pike-api
+  dgc-api:
+    image: dgc-api
     build:
       context: .
       dockerfile: api/Dockerfile-installed-${DISTRO}
-    container_name: pike-api
+    container_name: dgc-api
     expose:
       - 9001
     ports:
@@ -22,46 +22,46 @@ services:
       ROCKET_ADDRESS: "0.0.0.0"
       ROCKET_PORT: 9001
       VALIDATOR_URL: tcp://validator:9004
-      DATABASE_URL: postgres://pike:pike@pike-db:5432/pike_identity
+      DATABASE_URL: postgres://dgc:dgc@dgc-db:5432/dgc_identity
 
-  pike-swagger-ui:
-    image: pike-swagger-ui
+  dgc-swagger-ui:
+    image: dgc-swagger-ui
     build:
       context: .
       dockerfile: api/Dockerfile-swagger-ui
-    container_name: pike-swagger-ui
+    container_name: dgc-swagger-ui
     expose:
       - 80
     ports:
       - 9002:80
 
-  pike-db:
-    image: pike-db
+  dgc-db:
+    image: dgc-db
     build:
       context: db/
       dockerfile: Dockerfile
-    container_name: pike-db
+    container_name: dgc-db
     environment:
-      POSTGRES_DB: pike_identity
-      POSTGRES_USER: pike
-      POSTGRES_PASSWORD: pike
+      POSTGRES_DB: dgc_identity
+      POSTGRES_USER: dgc
+      POSTGRES_PASSWORD: dgc
     ports:
       - 5432:5432
 
-  pike-adminer:
+  dgc-adminer:
     image: adminer
-    container_name: pike-adminer
+    container_name: dgc-adminer
     links:
-      - pike-db:db
+      - dgc-db:db
     ports:
       - 9003:8080
 
-  pike-client:
-    image: pike-client
+  dgc-client:
+    image: dgc-client
     build:
       context: .
       dockerfile: cli/Dockerfile-installed-${DISTRO}
-    container_name: pike-client
+    container_name: dgc-client
     entrypoint: "bash -c \"\
       sawtooth keygen && \
       tail -f /dev/null \
@@ -69,7 +69,7 @@ services:
 
   validator:
     image: hyperledger/sawtooth-validator:latest
-    container_name: pike-validator
+    container_name: dgc-validator
     expose:
       - 9004
     ports:
@@ -93,7 +93,7 @@ services:
 
   rest-api:
     image: hyperledger/sawtooth-rest-api:latest
-    container_name: pike-sawtooth-rest-api
+    container_name: dgc-sawtooth-rest-api
     expose:
       - 9008
     ports:
@@ -102,7 +102,7 @@ services:
 
   shell:
     image: hyperledger/sawtooth-shell:latest
-    container_name: pike-shell
+    container_name: dgc-shell
     entrypoint: "bash -c \"\
         sawtooth keygen && \
         tail -f /dev/null \
@@ -110,7 +110,7 @@ services:
 
   settings-tp:
     image: hyperledger/sawtooth-settings-tp:latest
-    container_name: pike-settings-tp
+    container_name: dgc-settings-tp
     entrypoint: settings-tp -vv --connect tcp://validator:9004
 
   devmode-rust:
@@ -122,26 +122,26 @@ services:
         devmode-engine-rust -v --connect tcp://validator:5050
     stop_signal: SIGKILL
 
-  pike-tp:
-    image: pike-tp
+  dgc-tp:
+    image: dgc-tp
     build:
       context: .
       dockerfile: tp/Dockerfile-installed-${DISTRO}
-    container_name: pike-tp
+    container_name: dgc-tp
     entrypoint: "bash -c \"\
-        pike-tp -vv -C tcp://validator:9004 \
+        dgc-tp -vv -C tcp://validator:9004 \
         \""
 
-  pike-sde-service:
-    image: pike-sde-service
+  dgc-sde-service:
+    image: dgc-sde-service
     build:
       context: .
       dockerfile: state_delta_export/Dockerfile-installed-${DISTRO}
-    container_name: pike-sde-service
+    container_name: dgc-sde-service
     environment:
-      DATABASE_URL: postgres://pike:pike@pike-db:5432/pike
-    entrypoint: "bash -c \"pike-sde -vv -c tcp://validator:9004\""
+      DATABASE_URL: postgres://dgc:dgc@dgc-db:5432/dgc
+    entrypoint: "bash -c \"dgc-sde -vv -c tcp://validator:9004\""
     depends_on:
       - validator
       - rest-api
-      - pike-db
+      - dgc-db

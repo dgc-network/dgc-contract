@@ -14,7 +14,7 @@ extern crate rocket_cors;
 #[macro_use] extern crate serde_derive;
 extern crate serde_yaml;
 extern crate serde_json;
-extern crate pike_db;
+extern crate dgc_db;
 extern crate sawtooth_sdk;
 extern crate protobuf;
 extern crate uuid;
@@ -30,7 +30,7 @@ use rocket::http::Method;
 use rocket_cors::{AllowedOrigins, AllowedHeaders, Error};
 use rocket_contrib::json::{Json, JsonValue};
 use routes::{agents, organizations};
-use pike_db::pools;
+use dgc_db::pools;
 use routes::transactions;
 
 use sawtooth_sdk::messaging::zmq_stream::ZmqMessageConnection;

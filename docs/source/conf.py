@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Pike documentation build configuration file, created by
+# dgc documentation build configuration file, created by
 # sphinx-quickstart on Tue Dec 19 09:47:48 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -49,9 +49,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Sawtooth Pike'
-copyright = '2017, Cargill'
-author = 'Cargill'
+project = 'dgc Contract'
+copyright = '2020, dgc-network'
+author = 'dgc-network'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -115,7 +115,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Pikedoc'
+htmlhelp_basename = 'dgcdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -142,7 +142,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'Pike.tex', 'Sawtooth Pike Documentation',
+    (master_doc, 'dgc.tex', 'dgc Contract Documentation',
      'Cargill', 'manual'),
 ]
 
@@ -152,7 +152,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'pike', 'Sawtooth Pike Documentation',
+    (master_doc, 'dgc', 'dgc Contract Documentation',
      [author], 1)
 ]
 
@@ -163,7 +163,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Pike', 'Sawtooth  Documentation',
-     author, 'Pike', 'One line description of project.',
+    (master_doc, 'dgc', 'Sawtooth  Documentation',
+     author, 'dgc', 'One line description of project.',
      'Miscellaneous'),
 ]

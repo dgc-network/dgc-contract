@@ -1,11 +1,11 @@
 # Copyright (c) The dgc.network
 # SPDX-License-Identifier: Apache-2.0
 
-# docker build -f state_delta_export/Dockerfile-installed-xenial -t sawtooth-pike-sde .
+# docker build -f state_delta_export/Dockerfile-installed-xenial -t sawtooth-dgc-sde .
 
 # -------------=== state delta export build ===-------------
 
-FROM ubuntu:xenial as pike-sde-builder
+FROM ubuntu:xenial as dgc-sde-builder
 
 ENV VERSION=AUTO_STRICT
 
@@ -42,10 +42,10 @@ RUN export VERSION=$(../../../bin/get_version) \
 
 FROM ubuntu:xenial
 
-COPY --from=pike-sde-builder /project/state_delta_export/target/debian/pike-sde*.deb /tmp
+COPY --from=dgc-sde-builder /project/state_delta_export/target/debian/dgc-sde*.deb /tmp
 
 RUN apt-get update \
- && dpkg -i /tmp/pike-sde*.deb || true \
+ && dpkg -i /tmp/dgc-sde*.deb || true \
  && apt-get -f -y install
 
 ENTRYPOINT ["tail", "-f", "/dev/null"]

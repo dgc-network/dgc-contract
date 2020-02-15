@@ -6,8 +6,8 @@ extern crate rocket;
 use rocket_contrib::json::Json;
 use guard::db_conn::DbConn;
 
-use pike_db as db;
-use pike_db::models::Agent;
+use dgc_db as db;
+use dgc_db::models::Agent;
 
 #[get("/agent/<publickey>")]
 pub fn get_agent(conn: DbConn, publickey: String) -> Option<Json<Agent>> {

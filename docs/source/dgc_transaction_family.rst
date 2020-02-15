@@ -1,11 +1,11 @@
 *****************************************
-Pike Transaction Family Specification
+dgc Transaction Family Specification
 *****************************************
 
 Overview
 =========
 
-The Pike Transaction Family is designed to track the identities of the
+The dgc Transaction Family is designed to track the identities of the
 actors involved in the supply chain. These actors are agents and the
 organizations they represent. The roles that the agents play within said
 organizations are also tracked. This information can be used to determine who
@@ -103,23 +103,23 @@ Addressing
 Agent State
 ^^^^^^^^^^^
 
-The specific namespace prefix within Pike for Agent State is cad11d00,
-which is the general Pike namespace cad11d concatenated with 00. The
+The specific namespace prefix within dgc for Agent State is cad11d00,
+which is the general dgc namespace cad11d concatenated with 00. The
 remaining 62 characters are made of the first 62 character of the hash of the
 agent's public key.
 
 Organization State
 ^^^^^^^^^^^^^^^^^^
 
-The specific namespace prefix within Pike for Organization State is
-cad11d01, which is the general Pike namespace cad11d concatenated with 01.
+The specific namespace prefix within dgc for Organization State is
+cad11d01, which is the general dgc namespace cad11d concatenated with 01.
 The remaining 62 characters are made of the first 62 character of the hash of
 the organization's id.
 
 Transaction Payload
 ===================
 
-Pike transaction family payloads are defined by the following protocol
+dgc transaction family payloads are defined by the following protocol
 buffers code:
 
 .. code-block:: protobuf
@@ -150,12 +150,12 @@ Transaction Header
 Inputs and Outputs
 ------------------
 
-The inputs for Pike family transactions must include:
+The inputs for dgc family transactions must include:
 
 - The address of the agent or organization being modified
 - The address of the admin agent (agent correlating to the signing key)
 
-The outputs for Pike family transactions must include:
+The outputs for dgc family transactions must include:
 
 - The address of the agent or organization being modified
 - If creating an organization, the address of the agent that will be created as
@@ -170,7 +170,7 @@ None
 Family
 ------
 
-- family_name: "pike"
+- family_name: "dgc"
 - family_version: "0.1"
 
 Execution

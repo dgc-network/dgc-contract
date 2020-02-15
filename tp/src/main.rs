@@ -34,7 +34,7 @@ mod protos;
 fn main() {
     let matches = clap_app!(wasm_store_tp =>
         (version: crate_version!())
-        (about: "Implements the Pike transaction family")
+        (about: "Implements the dgc transaction family")
         (@arg connect: -C --connect +takes_value
          "connection endpoint for validator")
         (@arg verbose: -v --verbose +multiple

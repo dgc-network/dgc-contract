@@ -2,5 +2,5 @@
 # Copyright (c) The dgc.network
 # SPDX-License-Identifier: Apache-2.0
 
-psql "user=pike password=pike host=127.0.0.1 port=5432 dbname=pike" \
+psql "user=dgc password=dgc host=127.0.0.1 port=5432 dbname=dgc" \
     -f db/scripts/create_sample_data.sql
