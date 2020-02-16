@@ -32,7 +32,7 @@ const dgc_FAMILY_NAME: &'static str = "dgc";
 const dgc_FAMILY_VERSION: &'static str = "0.1";
 
 /// The dgc namespace prefix for global state (cad11d)
-const dgc_NAMESPACE: &'static str = "cad11d";
+const DGC_NAMESPACE: &'static str = "cad11d";
 
 /// Creates a nonce appropriate for a TransactionHeader
 fn create_nonce() -> String {
@@ -64,7 +64,7 @@ fn compute_agent_address(name: &str) -> String {
     sha.input(name.as_bytes());
     sha.result(hash);
 
-    String::from(dgc_NAMESPACE) + &resource_to_byte(Resource::AGENT)
+    String::from(DGC_NAMESPACE) + &resource_to_byte(Resource::AGENT)
         + &bytes_to_hex_str(hash)[..62]
 }
 
@@ -80,7 +80,7 @@ fn compute_org_address(id: &str) -> String {
     sha.input(id.as_bytes());
     sha.result(hash);
 
-    String::from(dgc_NAMESPACE) + &resource_to_byte(Resource::ORG)
+    String::from(DGC_NAMESPACE) + &resource_to_byte(Resource::ORG)
         + &bytes_to_hex_str(hash)[..62]
 }
 
@@ -146,7 +146,7 @@ pub fn create_transaction(
                 compute_agent_address(public_key),
             ])
         }
-        _ => protobuf::RepeatedField::from_vec(vec![String::from(dgc_NAMESPACE)]),
+        _ => protobuf::RepeatedField::from_vec(vec![String::from(DGC_NAMESPACE)]),
     };
 
     txn_header.set_inputs(addresses.clone());

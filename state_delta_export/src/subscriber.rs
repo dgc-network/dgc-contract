@@ -14,7 +14,7 @@ use sawtooth_sdk::messages::client_event::{ClientEventsSubscribeRequest, ClientE
 use sawtooth_sdk::messages::client_event::ClientEventsSubscribeResponse_Status;
 use sawtooth_sdk::messages::validator::Message_MessageType::CLIENT_EVENTS_SUBSCRIBE_REQUEST;
 
-const dgc_NAMESPACE: &'static str = "cad11d";
+const DGC_NAMESPACE: &'static str = "cad11d";
 const NULL_BLOCK_ID: &'static str = "0000000000000000";
 
 #[derive(Clone, Copy)]
@@ -48,7 +48,7 @@ impl Subscriber {
 
         let mut event_filter = EventFilter::new();
         event_filter.set_key(String::from("address"));
-        event_filter.set_match_string(format!("^{}.*", dgc_NAMESPACE));
+        event_filter.set_match_string(format!("^{}.*", DGC_NAMESPACE));
         event_filter.set_filter_type(EventFilter_FilterType::REGEX_ANY);
 
         state_delta_sub.set_filters(
