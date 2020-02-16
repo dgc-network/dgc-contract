@@ -29,7 +29,7 @@ use sawtooth_sdk::messages::transaction_receipt::StateChangeList;
 
 const APP_NAME: &'static str = env!("CARGO_PKG_NAME");
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
-const AUTHOR: &'static str = "Cargill";
+const AUTHOR: &'static str = "dgc.network";
 
 fn url_is_valid(url: &str) -> bool {
     Regex::new(r"^[a-zA-Z]+://(.+:.+@)?.+:[0-9]{2,5}/?.*$")
