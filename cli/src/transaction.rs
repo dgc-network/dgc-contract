@@ -26,10 +26,10 @@ use protos::payload;
 use protos::payload::SmartPayload_Action as Action;
 
 /// The dgc transaction family name (dgc)
-const dgc_FAMILY_NAME: &'static str = "dgc";
+const DGC_FAMILY_NAME: &'static str = "dgc";
 
 /// The dgc transaction family version (0.1)
-const dgc_FAMILY_VERSION: &'static str = "0.1";
+const DGC_FAMILY_VERSION: &'static str = "0.1";
 
 /// The dgc namespace prefix for global state (cad11d)
 const DGC_NAMESPACE: &'static str = "cad11d";
@@ -107,8 +107,8 @@ pub fn create_transaction(
     let mut txn = Transaction::new();
     let mut txn_header = TransactionHeader::new();
 
-    txn_header.set_family_name(String::from(dgc_FAMILY_NAME));
-    txn_header.set_family_version(String::from(dgc_FAMILY_VERSION));
+    txn_header.set_family_name(String::from(DGC_FAMILY_NAME));
+    txn_header.set_family_version(String::from(DGC_FAMILY_VERSION));
     txn_header.set_nonce(create_nonce());
     txn_header.set_signer_public_key(public_key.clone());
     txn_header.set_batcher_public_key(public_key.clone());
