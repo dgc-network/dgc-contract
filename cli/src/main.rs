@@ -76,7 +76,7 @@ fn run() -> Result<(), CliError> {
     let matches = clap_app!(myapp =>
         (name: APP_NAME)
         (version: VERSION)
-        (author: "Cargill")
+        (author: "dgc.network")
         (about: "dgc Contract CLI")
         (@arg url: --url +takes_value "Rest api url")
         (@setting SubcommandRequiredElseHelp)
