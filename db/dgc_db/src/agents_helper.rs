@@ -10,13 +10,20 @@ use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use diesel::QueryResult;
 
-pub fn create_agent(conn: &PgConnection, agent: NewAgent) -> QueryResult<Agent> {
+pub fn create_agent(
+    conn: &PgConnection, 
+    agent: NewAgent
+) -> QueryResult<Agent> {
     diesel::insert_into(agents::table)
         .values(&agent)
         .get_result::<Agent>(conn)
 }
 
-pub fn update_agent(conn: &PgConnection, public_key: &str, agent: NewAgent) -> QueryResult<Agent> {
+pub fn update_agent(
+    conn: &PgConnection, 
+    public_key: &str, 
+    agent: NewAgent
+) -> QueryResult<Agent> {
     diesel::update(agents::table)
         .filter(dsl::public_key.eq(public_key))
         .set((
@@ -29,14 +36,19 @@ pub fn update_agent(conn: &PgConnection, public_key: &str, agent: NewAgent) -> Q
         .get_result::<Agent>(conn)
 }
 
-pub fn get_agent(conn: &PgConnection, public_key: &str) -> QueryResult<Agent> {
+pub fn get_agent(
+    conn: &PgConnection, 
+    public_key: &str
+) -> QueryResult<Agent> {
     agents::table
         .select(agents::all_columns)
         .find(public_key)
         .first(conn)
 }
 
-pub fn get_agents(conn: &PgConnection) -> QueryResult<Vec<Agent>> {
+pub fn get_agents(
+    conn: &PgConnection
+) -> QueryResult<Vec<Agent>> {
     agents::table
         .select(agents::all_columns)
         .load(conn)

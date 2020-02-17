@@ -75,7 +75,11 @@ pub fn update_agent_payload(
 /// * `id` - Unique ID for organization
 /// * `name` - The organization's name
 /// * `address` - The physical address of the organization
-pub fn create_org_payload(id: &str, name: &str, address: Option<&str>) -> SmartPayload {
+pub fn create_org_payload(
+    id: &str, 
+    name: &str, 
+    address: Option<&str>
+) -> SmartPayload {
     let mut create_org = CreateOrganizationAction::new();
     create_org.set_id(String::from(id));
     create_org.set_name(String::from(name));
@@ -98,7 +102,11 @@ pub fn create_org_payload(id: &str, name: &str, address: Option<&str>) -> SmartP
 /// * `id` - Unique ID for organization
 /// * `name` - The organization's name
 /// * `address` - The physical address of the organization
-pub fn update_org_payload(id: &str, name: &str, address: Option<&str>) -> SmartPayload {
+pub fn update_org_payload(
+    id: &str, 
+    name: &str, 
+    address: Option<&str>
+) -> SmartPayload {
     let mut update_org = UpdateOrganizationAction::new();
     update_org.set_id(String::from(id));
     update_org.set_name(String::from(name));

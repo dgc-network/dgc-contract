@@ -21,9 +21,10 @@ use sawtooth_sdk::messages::client_batch_submit::{
 };
 
 pub fn submit_batches(
-        sender: &mut ZmqMessageSender,
-        batches: &[u8],
-        timeout: u32) -> Result<Vec<BatchStatus>, TransactionError> {
+    sender: &mut ZmqMessageSender,
+    batches: &[u8],
+    timeout: u32
+) -> Result<Vec<BatchStatus>, TransactionError> {
 
     let batch_list: BatchList = protobuf::parse_from_bytes(&batches)?;
 
@@ -53,7 +54,8 @@ pub fn submit_batches(
 pub fn check_batch_status(
     sender: &mut ZmqMessageSender,
     batch_ids: Vec<String>,
-    timeout: u32) -> Result<Vec<BatchStatus>, TransactionError> {
+    timeout: u32
+) -> Result<Vec<BatchStatus>, TransactionError> {
 
     let mut request = ClientBatchStatusRequest::new();
     request.set_batch_ids(protobuf::RepeatedField::from_vec(batch_ids));
@@ -84,7 +86,8 @@ pub fn check_batch_status(
 fn send(
     sender: &mut ZmqMessageSender,
     message_type: Message_MessageType,
-    content: &[u8]) -> Result<Message, TransactionError> {
+    content: &[u8]
+) -> Result<Message, TransactionError> {
 
     let correlation_id = &generate_uuid()?;
     sender.send(message_type, correlation_id, content)?

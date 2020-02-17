@@ -44,10 +44,11 @@ use protos::state::KeyValueEntry;
 use protobuf::Message;
 
 fn do_create(
-        url: &str,
-        private_key: &dyn PrivateKey,
-        payload: &SmartPayload,
-        output: &str) -> Result<(), CliError> {
+    url: &str,
+    private_key: &dyn PrivateKey,
+    payload: &SmartPayload,
+    output: &str
+) -> Result<(), CliError> {
 
     if !output.is_empty() {
         let mut buffer = File::create(output)?;

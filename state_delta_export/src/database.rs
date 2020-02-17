@@ -19,7 +19,10 @@ use protos::state::{
     OrganizationList
 };
 
-pub fn apply_state_change(conn: &PgConnection, state_change: &StateChange) -> Result<(), StateChangeError> {
+pub fn apply_state_change(
+    conn: &PgConnection, 
+    state_change: &StateChange
+) -> Result<(), StateChangeError> {
     match state_change.field_type{
         StateChange_Type::SET => set(conn, &state_change.address, &state_change.value),
         _ => Err(

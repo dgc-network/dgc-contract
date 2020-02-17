@@ -51,7 +51,10 @@ impl<'a> SmartState<'a> {
         SmartState { context: context }
     }
 
-    pub fn get_agent(&mut self, public_key: &str) -> Result<Option<Agent>, ApplyError> {
+    pub fn get_agent(
+        &mut self, 
+        public_key: &str
+    ) -> Result<Option<Agent>, ApplyError> {
         let address = compute_address(public_key, Resource::AGENT);
         let d = self.context.get_state_entry(&address)?;
         match d {
@@ -77,7 +80,11 @@ impl<'a> SmartState<'a> {
         }
     }
 
-    pub fn set_agent(&mut self, public_key: &str, new_agent: Agent) -> Result<(), ApplyError> {
+    pub fn set_agent(
+        &mut self, 
+        public_key: &str, 
+        new_agent: Agent
+    ) -> Result<(), ApplyError> {
         let address = compute_address(public_key, Resource::AGENT);
         let d = self.context.get_state_entry(&address)?;
         let mut agent_list = match d {
@@ -126,7 +133,10 @@ impl<'a> SmartState<'a> {
         Ok(())
     }
 
-    pub fn get_organization(&mut self, id: &str) -> Result<Option<Organization>, ApplyError> {
+    pub fn get_organization(
+        &mut self, 
+        id: &str
+    ) -> Result<Option<Organization>, ApplyError> {
         let address = compute_address(id, Resource::ORG);
         let d = self.context.get_state_entry(&address)?;
         match d {
@@ -488,7 +498,11 @@ fn update_org(
     state.set_organization(payload.get_id(), organization)
 }
 
-pub fn is_admin(signer: &str, org_id: &str, state: &mut SmartState) -> Result<(), ApplyError> {
+pub fn is_admin(
+    signer: &str, 
+    org_id: &str, 
+    state: &mut SmartState
+) -> Result<(), ApplyError> {
     let admin = match state.get_agent(signer) {
         Ok(None) => {
             return Err(ApplyError::InvalidTransaction(format!(

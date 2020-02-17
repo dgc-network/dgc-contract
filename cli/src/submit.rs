@@ -17,7 +17,10 @@ use sawtooth_sdk::messages::batch::BatchList;
 use error::CliError;
 use protobuf::Message;
 
-pub fn submit_batch_list(url: &str, batch_list: &BatchList) -> Result<(), CliError> {
+pub fn submit_batch_list(
+    url: &str, 
+    batch_list: &BatchList
+) -> Result<(), CliError> {
     let hyper_uri = match url.parse::<hyper::Uri>() {
         Ok(uri) => uri,
         Err(e) => return Err(CliError::UserError(format!("Invalid URL: {}: {}", e, url))),
