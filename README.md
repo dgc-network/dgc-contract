@@ -2,11 +2,11 @@
 
 NAMES	IMAGE                                      	PORTS                              
 dgc-sde-service(dgc-sde-service)
-dgc-adminer(adminer) 0.0.0.0:9003->8080/tcp             
-dgc-swagger-ui(dgc-swagger-ui) 0.0.0.0:9002->80/tcp               
-dgc-api(dgc-api) 0.0.0.0:9001->9001/tcp             
-dgc-client(dgc-client)                                 	
-dgc-db(dgc-db) 0.0.0.0:5432->5432/tcp             
+dgc-adminer(adminer) 0.0.0.0:9003->8080/tcp
+dgc-swagger-ui(dgc-swagger-ui) 0.0.0.0:9002->80/tcp
+dgc-api(dgc-api) 0.0.0.0:9001->9001/tcp
+dgc-client(dgc-client)
+dgc-db(dgc-db) 0.0.0.0:5432->5432/tcp
 dgc-tp(dgc-tp)
 
 sabre-cli	hyperledger/sawtooth-sabre-cli             	4004/tcp, 8008/tcp                 
