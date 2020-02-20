@@ -269,10 +269,78 @@ fn run() -> Result<(), CliError> {
 
     Ok(())
 }
-
+/*
 fn main() {
     if let Err(e) = run() {
         println!("{}", e);
         std::process::exit(1);
     }
+}
+*/
+#[get("/")]
+fn hello() -> &'static str {
+    "Hello, world!"
+}
+
+#[catch(404)]
+fn not_found(_: &rocket::Request) -> Json<JsonValue> {
+    Json(json!({
+        "message": "Not Found"
+    }))
+}
+
+#[catch(500)]
+fn internal_server_error(_: &rocket::Request) -> Json<JsonValue> {
+    Json(json!({
+        "message": "Internal Server Error"
+    }))
+}
+
+fn main() -> Result<(), Error> {
+    //let (allowed_origins, failed_origins) = AllowedOrigins::some(&["http://localhost:9002"]);
+    //assert!(failed_origins.is_empty());
+
+    //let options = rocket_cors::Cors {
+    let options = rocket_cors::CorsOptions {
+        //allowed_origins: allowed_origins,
+        allowed_origins: AllowedOrigins::all(),
+        allowed_methods: vec![Method::Get, Method::Post, Method::Options].into_iter().map(From::from).collect(),
+        allowed_headers: AllowedHeaders::some(&["Authorization", "Accept", "Content-Type"]),
+        allow_credentials: true,
+        ..Default::default()
+    }
+    .to_cors()?;
+/*
+    let database_url = if let Ok(s) = env::var("DATABASE_URL") {
+        s
+    } else {
+        "postgres://localhost:5432".into()
+    };
+*/
+    let validator_url = if let Ok(s) = env::var("VALIDATOR_URL") {
+       s
+    } else {
+        "tcp://localhost:8004".into()
+    };
+
+    rocket::ignite()
+        .mount("/", routes![
+               hello,
+               //openapi::openapi_json,
+               //openapi::openapi_yaml,
+               //agents::get_agent,
+               //agents::get_agents,
+               //organizations::get_org,
+               //organizations::get_orgs,
+               //transactions::submit_txns,
+               //transactions::submit_txns_wait,
+               //transactions::get_batch_status])
+        //.manage(pools::init_pg_pool(database_url))
+        .manage(ZmqMessageConnection::new(&validator_url))
+        .attach(options)
+        //.catch(errors![not_found, internal_server_error])
+        .register(catchers![not_found, internal_server_error])
+        .launch();
+
+    Ok(())
 }
