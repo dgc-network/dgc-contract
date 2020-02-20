@@ -72,7 +72,7 @@ fn do_create(
         &format!("{}/batches?wait=120", url),
         &batch_list)
 }
-
+/*
 fn run() -> Result<(), CliError> {
     let matches = clap_app!(myapp =>
         (name: APP_NAME)
@@ -269,7 +269,7 @@ fn run() -> Result<(), CliError> {
 
     Ok(())
 }
-/*
+
 fn main() {
     if let Err(e) = run() {
         println!("{}", e);
@@ -283,7 +283,7 @@ fn main() {
 #[macro_use] extern crate rocket;
 extern crate rocket_cors;
 #[macro_use] extern crate rocket_contrib;
-#[macro_use] extern crate serde_derive;
+//#[macro_use] extern crate serde_derive;
 
 use std::env;
 use rocket::http::Method;
@@ -347,7 +347,6 @@ fn main() -> Result<(), Error> {
         //.manage(pools::init_pg_pool(database_url))
         .manage(ZmqMessageConnection::new(&validator_url))
         .attach(options)
-        //.catch(errors![not_found, internal_server_error])
         .register(catchers![not_found, internal_server_error])
         .launch();
 

@@ -8,7 +8,6 @@ authors = ["dgc.network"]
 build = "build.rs"
 
 [dependencies]
-rocket = "0.4.2"
 sawtooth-sdk = {git = "https://github.com/hyperledger/sawtooth-sdk-rust"}
 addresser = {path = "../addresser"}
 protobuf = "2"
@@ -20,6 +19,14 @@ tokio-core = "0.1"
 tokio-timer = "0.1"
 users = "0.6"
 dirs = "2.0"
+
+rocket = "0.4.2"
+rocket_cors = "0.5.1"
+
+[dependencies.rocket_contrib]
+version = "*"
+default-features = false
+features = ["json"]
 
 [build-dependencies]
 protoc-rust = "2"
