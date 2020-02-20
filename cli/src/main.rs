@@ -277,7 +277,7 @@ fn main() {
     }
 }
 */
-
+/*
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use] extern crate rocket;
@@ -318,13 +318,13 @@ fn main() -> Result<(), Error> {
         ..Default::default()
     }
     .to_cors()?;
-/*
-    let database_url = if let Ok(s) = env::var("DATABASE_URL") {
-        s
-    } else {
-        "postgres://localhost:5432".into()
-    };
-*/
+
+    //let database_url = if let Ok(s) = env::var("DATABASE_URL") {
+    //    s
+    //} else {
+    //    "postgres://localhost:5432".into()
+    //};
+
     let validator_url = if let Ok(s) = env::var("VALIDATOR_URL") {
        s
     } else {
@@ -352,3 +352,4 @@ fn main() -> Result<(), Error> {
 
     Ok(())
 }
+*/
