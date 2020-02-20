@@ -277,6 +277,19 @@ fn main() {
     }
 }
 */
+
+#![feature(proc_macro_hygiene, decl_macro)]
+
+#[macro_use] extern crate rocket;
+extern crate rocket_cors;
+#[macro_use] extern crate rocket_contrib;
+#[macro_use] extern crate serde_derive;
+
+use std::env;
+use rocket::http::Method;
+use rocket_cors::{AllowedOrigins, AllowedHeaders, Error};
+use rocket_contrib::json::{Json, JsonValue};
+
 #[get("/")]
 fn hello() -> &'static str {
     "Hello, world!"
@@ -297,12 +310,7 @@ fn internal_server_error(_: &rocket::Request) -> Json<JsonValue> {
 }
 
 fn main() -> Result<(), Error> {
-    //let (allowed_origins, failed_origins) = AllowedOrigins::some(&["http://localhost:9002"]);
-    //assert!(failed_origins.is_empty());
-
-    //let options = rocket_cors::Cors {
     let options = rocket_cors::CorsOptions {
-        //allowed_origins: allowed_origins,
         allowed_origins: AllowedOrigins::all(),
         allowed_methods: vec![Method::Get, Method::Post, Method::Options].into_iter().map(From::from).collect(),
         allowed_headers: AllowedHeaders::some(&["Authorization", "Accept", "Content-Type"]),
@@ -325,7 +333,8 @@ fn main() -> Result<(), Error> {
 
     rocket::ignite()
         .mount("/", routes![
-               hello,
+               hello])
+               //hello,
                //openapi::openapi_json,
                //openapi::openapi_yaml,
                //agents::get_agent,
