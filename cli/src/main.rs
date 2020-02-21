@@ -72,7 +72,7 @@ fn do_create(
         &format!("{}/batches?wait=120", url),
         &batch_list)
 }
-/*
+
 fn run() -> Result<(), CliError> {
     let matches = clap_app!(myapp =>
         (name: APP_NAME)
@@ -276,7 +276,7 @@ fn main() {
         std::process::exit(1);
     }
 }
-*/
+
 /*
 #![feature(proc_macro_hygiene, decl_macro)]
 
