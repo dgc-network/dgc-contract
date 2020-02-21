@@ -104,6 +104,10 @@ fn main() -> Result<(), Error> {
     Ok(())
 }
 
+extern crate protobuf;
+
+mod transactions;
+
 use std::fs::File;
 use std::io::prelude::*;
 
