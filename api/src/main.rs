@@ -18,6 +18,23 @@ extern crate sawtooth_sdk;
 extern crate protobuf;
 extern crate uuid;
 
+extern crate addresser;
+#[macro_use] extern crate clap;
+extern crate crypto;
+extern crate futures;
+extern crate hyper;
+//extern crate protobuf;
+//extern crate sawtooth_sdk;
+extern crate tokio_core;
+extern crate users;
+
+mod error;
+mod key;
+mod payload;
+mod protos;
+mod transaction;
+//mod submit;
+
 mod openapi;
 mod routes;
 mod guard;
@@ -104,9 +121,10 @@ fn main() -> Result<(), Error> {
     Ok(())
 }
 
-extern crate protobuf;
+//extern crate protobuf;
 
-mod transactions;
+//mod trans;
+//mod protos;
 
 use std::fs::File;
 use std::io::prelude::*;
@@ -114,15 +132,15 @@ use std::io::prelude::*;
 use sawtooth_sdk::signing;
 use sawtooth_sdk::signing::PrivateKey;
 
-use transactions::error::CliError;
-use transactions::key::load_signing_key;
-use transactions::payload::{
+use trans::error::CliError;
+use trans::key::load_signing_key;
+use trans::payload::{
     create_agent_payload,
     create_org_payload,
     update_agent_payload,
     update_org_payload
 };
-use transactions::submit::submit_batch_list;
+use trans::submit::submit_batch_list;
 
 use protos::payload::SmartPayload;
 use protos::state::KeyValueEntry;

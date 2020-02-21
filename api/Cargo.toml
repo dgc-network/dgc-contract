@@ -19,6 +19,18 @@ dgc_db = { path = "../db/dgc_db/" }
 protobuf = "2"
 uuid = { version = "0.5", features = ["v4"] }
 
+#sawtooth-sdk = {git = "https://github.com/hyperledger/sawtooth-sdk-rust"}
+addresser = {path = "../addresser"}
+#protobuf = "2"
+clap = "2"
+rust-crypto = "0.2"
+futures = "0.1"
+hyper = "0.11"
+tokio-core = "0.1"
+tokio-timer = "0.1"
+users = "0.6"
+dirs = "2.0"
+
 [dependencies.rocket_contrib]
 version = "*"
 default-features = false
