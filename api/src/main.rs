@@ -33,7 +33,7 @@ mod key;
 mod payload;
 mod protos;
 mod transaction;
-//mod submit;
+mod submitBatchList;
 
 mod openapi;
 mod routes;
@@ -132,15 +132,15 @@ use std::io::prelude::*;
 use sawtooth_sdk::signing;
 use sawtooth_sdk::signing::PrivateKey;
 
-use trans::error::CliError;
-use trans::key::load_signing_key;
-use trans::payload::{
+use error::CliError;
+use key::load_signing_key;
+use payload::{
     create_agent_payload,
     create_org_payload,
     update_agent_payload,
     update_org_payload
 };
-use trans::submit::submit_batch_list;
+use submitBatchList::submit_batch_list;
 
 use protos::payload::SmartPayload;
 use protos::state::KeyValueEntry;
