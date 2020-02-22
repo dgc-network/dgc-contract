@@ -35,18 +35,51 @@ use submit::{submit_batches, check_batch_status, BatchStatus};
 use submit::TransactionError as error;
 use rocket::request::Form;
 use error::CliError;
-use submit_batch_list::do_create;
+use do_create::do_create;
 use payload::{
     create_agent_payload,
     create_org_payload,
     update_agent_payload,
     update_org_payload
 };
+use sawtooth_sdk::signing;
+use sawtooth_sdk::signing::PrivateKey;
+use key::load_signing_key;
 
-#[post("/agent", format = "application/octet-stream", data = "<data>")]
+#[derive(FromForm)]
+struct MyForm { 
+    private_key: String, 
+    org_id: String, 
+    roles: String, 
+    metadata: String
+}
+
+#[post("/agent", format = "application/octet-stream", data = "<input>")]
+pub fn create_agent(input: Form<MyForm>) -> String {
+    if input.private_key.is_empty() {
+        "PrivateKey cannot be empty."
+    } else {
+        let url = "http://dgc-api:9001";
+        let output = "";
+
+        let private_key = input.private_key;
+        let org_id = input.org_id;
+        let roles = input.roles;
+        let metadata = input.metadata;
+        let context = signing::create_context("secp256k1")?;
+        let public_key = context.get_public_key(private_key)?;
+    
+        let payload = create_agent_payload(org_id, public_key, roles, metadata);
+    
+        do_create(&url, &private_key, &payload, &output)?;
+    
+        "Data added."
+    }
+}
+/*
 pub fn create_agent(
     //conn: ValidatorConn, 
-    data: Vec<u8>
+    //data: Vec<u8>
 ) -> Result<Json<Vec<BatchStatus>>, Custom<Json<JsonValue>>> {
 /*
     let url = matches.value_of("url").unwrap_or("http://dgc-api:9001");    
@@ -101,9 +134,11 @@ pub fn create_agent(
     let public_key = context.get_public_key(private_key)?;
 
     let payload = create_agent_payload(org_id, public_key, roles, metadata);
+
     do_create(&url, &private_key, &payload, &output)?;
 
     //submit_batches(&mut conn.clone(), &data, 0)
     //    .map_err(map_error)
     //    .and_then(|b| Ok(Json(b)))
 }
+*/
