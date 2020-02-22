@@ -45,6 +45,7 @@ use payload::{
 use sawtooth_sdk::signing;
 use sawtooth_sdk::signing::PrivateKey;
 use key::load_signing_key;
+use protos::state::KeyValueEntry;
 
 #[derive(FromForm)]
 struct MyForm { 
@@ -57,7 +58,7 @@ struct MyForm {
 #[post("/agent", format = "application/octet-stream", data = "<input>")]
 pub fn create_agent(input: Form<MyForm>) -> String {
     if input.private_key.is_empty() {
-        "PrivateKey cannot be empty."
+        "PrivateKey cannot be empty.".to_string()
     } else {
         let url = "http://dgc-api:9001";
         let output = "";
@@ -65,15 +66,46 @@ pub fn create_agent(input: Form<MyForm>) -> String {
         let private_key = input.private_key;
         let org_id = input.org_id;
         let roles = input.roles;
-        let metadata = input.metadata;
-        let context = signing::create_context("secp256k1")?;
-        let public_key = context.get_public_key(private_key)?;
+
+        let metadata_as_strings = input.metadata;
+        let mut metadata = Vec::<KeyValueEntry>::new();
+        for meta in metadata_as_strings {
+            let key_val: Vec<&str> = meta.split(",").collect();
+            if key_val.len() != 2 {
+                return Err(CliError::UserError(
+                    "Metadata is formated incorrectly".to_string(),
+                ));
+            }
+            let key = match key_val.get(0) {
+                Some(key) => key.to_string(),
+                None => {
+                    return Err(CliError::UserError(
+                        "Metadata is formated incorrectly".to_string(),
+                    ))
+                }
+            };
+            let value = match key_val.get(1) {
+                Some(value) => value.to_string(),
+                None => {
+                    return Err(CliError::UserError(
+                        "Metadata is formated incorrectly".to_string(),
+                    ))
+                }
+            };
+            let mut entry = KeyValueEntry::new();
+            entry.set_key(key);
+            entry.set_value(value);
+            metadata.push(entry.clone());
+        }
+    
+        let context = signing::create_context("secp256k1");
+        let public_key = context.get_public_key(private_key);
     
         let payload = create_agent_payload(org_id, public_key, roles, metadata);
     
-        do_create(&url, &private_key, &payload, &output)?;
+        do_create(&url, &private_key, &payload, &output);
     
-        "Data added."
+        "Data added.".to_string()
     }
 }
 /*
