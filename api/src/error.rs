@@ -23,7 +23,7 @@ pub enum CliError {
     ProtobufError(protobuf::ProtobufError),
     HyperError(hyper::Error),
 }
-
+/*
 impl StdError for CliError {
     fn description(&self) -> &str {
         match *self {
@@ -57,7 +57,7 @@ impl std::fmt::Display for CliError {
         }
     }
 }
-
+*/
 impl From<io::Error> for CliError {
     fn from(e: io::Error) -> Self {
         CliError::IoError(e)
