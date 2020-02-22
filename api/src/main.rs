@@ -104,6 +104,7 @@ fn main() -> Result<(), Error> {
                hello,
                openapi::openapi_json,
                openapi::openapi_yaml,
+               agents::create_agent,
                agents::get_agent,
                agents::get_agents,
                organizations::get_org,
@@ -177,66 +178,3 @@ fn do_create(
         &batch_list)
 }
 
-#[post("/agent", format = "application/octet-stream", data = "<data>")]
-pub fn create_agent(
-    //conn: ValidatorConn, 
-    data: Vec<u8>
-) -> Result<Json<Vec<BatchStatus>>, Custom<Json<JsonValue>>> {
-
-    let url = matches.value_of("url").unwrap_or("http://dgc-api:9001");    
-    let key_name = matches.value_of("key");
-    let org_id = matches.value_of("org_id").unwrap();
-    let public_key = matches.value_of("public_key").unwrap();
-    let output = matches.value_of("output").unwrap_or("");
-    let roles = matches
-        .values_of("roles")
-        .unwrap_or(clap::Values::default())
-        .map(String::from)
-        .collect();
-    let metadata_as_strings: Vec<String> = matches
-        .values_of("metadata")
-        .unwrap_or(clap::Values::default())
-        .map(String::from)
-        .collect();
-
-    let mut metadata = Vec::<KeyValueEntry>::new();
-    for meta in metadata_as_strings {
-        let key_val: Vec<&str> = meta.split(",").collect();
-        if key_val.len() != 2 {
-            return Err(CliError::UserError(
-                "Metadata is formated incorrectly".to_string(),
-            ));
-        }
-        let key = match key_val.get(0) {
-            Some(key) => key.to_string(),
-            None => {
-                return Err(CliError::UserError(
-                    "Metadata is formated incorrectly".to_string(),
-                ))
-            }
-        };
-        let value = match key_val.get(1) {
-            Some(value) => value.to_string(),
-            None => {
-                return Err(CliError::UserError(
-                    "Metadata is formated incorrectly".to_string(),
-                ))
-            }
-        };
-        let mut entry = KeyValueEntry::new();
-        entry.set_key(key);
-        entry.set_value(value);
-        metadata.push(entry.clone());
-    }
-
-    let private_key = load_signing_key(key_name)?;
-
-    //let context = signing::create_context("secp256k1")?;
-
-    let payload = create_agent_payload(org_id, public_key, roles, metadata);
-    do_create(&url, &private_key, &payload, &output)?;
-
-    //submit_batches(&mut conn.clone(), &data, 0)
-    //    .map_err(map_error)
-    //    .and_then(|b| Ok(Json(b)))
-}

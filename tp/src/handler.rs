@@ -21,9 +21,8 @@ cfg_if! {
 }
 
 use protos::payload::{CreateAgentAction, CreateOrganizationAction,
-                      SmartPayload,
-                      SmartPayload_Action as Action, UpdateAgentAction,
-                      UpdateOrganizationAction};
+                      SmartPayload, SmartPayload_Action as Action, 
+                      UpdateAgentAction, UpdateOrganizationAction};
 use protos::state::{Agent, AgentList, Organization, OrganizationList};
 use addresser::{resource_to_byte, Resource};
 
