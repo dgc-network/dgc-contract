@@ -17,7 +17,7 @@ use sawtooth_sdk::messages::batch::BatchList;
 use error::CliError;
 use protobuf::Message;
 
-pub fn submit_batch_list(
+fn submit_batch_list(
     url: &str, 
     batch_list: &BatchList
 ) -> Result<(), CliError> {
@@ -68,3 +68,49 @@ pub fn submit_batch_list(
 
     Ok(())
 }
+
+use std::fs::File;
+use std::io::prelude::*;
+
+use sawtooth_sdk::signing;
+use sawtooth_sdk::signing::PrivateKey;
+
+//use error::CliError;
+use key::load_signing_key;
+//use submit_batch_list::submit_batch_list;
+
+use protos::payload::SmartPayload;
+use protos::state::KeyValueEntry;
+
+//use protobuf::Message;
+
+pub fn do_create(
+    url: &str,
+    private_key: &dyn PrivateKey,
+    payload: &SmartPayload,
+    output: &str
+) -> Result<(), CliError> {
+
+    if !output.is_empty() {
+        let mut buffer = File::create(output)?;
+        let payload_bytes = payload.write_to_bytes()?;
+        buffer.write_all(&payload_bytes).map_err(|err| CliError::IoError(err))?;
+        return Ok(())
+    }
+
+    let context = signing::create_context("secp256k1")?;
+    let public_key = context.get_public_key(private_key)?;
+    let factory = signing::CryptoFactory::new(&*context);
+    let signer = factory.new_signer(private_key);
+
+    println!("creating resource {:?}", payload);
+
+    let txn = transaction::create_transaction(&payload, &signer, &public_key.as_hex())?;
+    let batch = transaction::create_batch(txn, &signer, &public_key.as_hex())?;
+    let batch_list = transaction::create_batch_list_from_one(batch);
+
+    submit_batch_list(
+        &format!("{}/batches?wait=120", url),
+        &batch_list)
+}
+

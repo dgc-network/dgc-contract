@@ -1,7 +1,7 @@
 // Copyright (c) The dgc.network
 // SPDX-License-Identifier: Apache-2.0
 
-extern crate rocket;
+//extern crate rocket;
 
 //use rocket_contrib::json::Json;
 use guard::db_conn::DbConn;
@@ -34,13 +34,21 @@ use guard::validator_conn::ValidatorConn;
 use submit::{submit_batches, check_batch_status, BatchStatus};
 use submit::TransactionError as error;
 use rocket::request::Form;
+use error::CliError;
+use submit_batch_list::do_create;
+use payload::{
+    create_agent_payload,
+    create_org_payload,
+    update_agent_payload,
+    update_org_payload
+};
 
 #[post("/agent", format = "application/octet-stream", data = "<data>")]
 pub fn create_agent(
     //conn: ValidatorConn, 
     data: Vec<u8>
 ) -> Result<Json<Vec<BatchStatus>>, Custom<Json<JsonValue>>> {
-
+/*
     let url = matches.value_of("url").unwrap_or("http://dgc-api:9001");    
     let key_name = matches.value_of("key");
     let org_id = matches.value_of("org_id").unwrap();
@@ -86,7 +94,7 @@ pub fn create_agent(
         entry.set_value(value);
         metadata.push(entry.clone());
     }
-
+*/
     let private_key = load_signing_key(key_name)?;
 
     //let context = signing::create_context("secp256k1")?;
