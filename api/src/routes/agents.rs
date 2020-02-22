@@ -97,7 +97,8 @@ pub fn create_agent(
 */
     let private_key = load_signing_key(key_name)?;
 
-    //let context = signing::create_context("secp256k1")?;
+    let context = signing::create_context("secp256k1")?;
+    let public_key = context.get_public_key(private_key)?;
 
     let payload = create_agent_payload(org_id, public_key, roles, metadata);
     do_create(&url, &private_key, &payload, &output)?;
