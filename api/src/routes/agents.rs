@@ -3,7 +3,7 @@
 
 //extern crate rocket;
 
-//use rocket_contrib::json::Json;
+use rocket_contrib::json::Json;
 use guard::db_conn::DbConn;
 
 use dgc_db as db;
@@ -27,11 +27,11 @@ pub fn get_agents(conn: DbConn) -> Json<Vec<Agent>> {
     }
 }
 
-use rocket_contrib::json::{Json, JsonValue};
-use rocket::http::Status;
-use rocket::response::status::Custom;
-use guard::validator_conn::ValidatorConn;
-use submit::{submit_batches, check_batch_status, BatchStatus};
+//use rocket_contrib::json::{Json, JsonValue};
+//use rocket::http::Status;
+//use rocket::response::status::Custom;
+//use guard::validator_conn::ValidatorConn;
+//use submit::{submit_batches, check_batch_status, BatchStatus};
 use submit::TransactionError as error;
 use rocket::request::Form;
 use error::CliError;
@@ -43,20 +43,46 @@ use payload::{
     update_org_payload
 };
 use sawtooth_sdk::signing;
-use sawtooth_sdk::signing::PrivateKey;
-use key::load_signing_key;
+//use sawtooth_sdk::signing::PrivateKey;
+//use key::load_signing_key;
 use protos::state::KeyValueEntry;
 
 #[derive(FromForm)]
-struct MyForm { 
+struct Item { 
     private_key: String, 
     org_id: String, 
     roles: String, 
     metadata: String
 }
+/*
+struct Item {
+    field: String
+}
+*/
+impl<'f> FromForm<'f> for Item {
+    // In practice, we'd use a more descriptive error type.
+    type Error = ();
+
+    fn from_form(items: &mut FormItems<'f>, strict: bool) -> Result<Item, ()> {
+        let mut field = None;
+
+        for item in items {
+            match item.key.as_str() {
+                "balloon" | "space" if field.is_none() => {
+                    let decoded = item.value.url_decode().map_err(|_| ())?;
+                    field = Some(decoded);
+                }
+                _ if strict => return Err(()),
+                _ => { /* allow extra value when not strict */ }
+            }
+        }
+
+        field.map(|field| Item { field }).ok_or(())
+    }
+}
 
 #[post("/agent", format = "application/octet-stream", data = "<input>")]
-pub fn create_agent(input: Form<MyForm>) -> String {
+pub fn create_agent(input: Form<Item>) -> String {
     if input.private_key.is_empty() {
         "PrivateKey cannot be empty.".to_string()
     } else {
@@ -69,7 +95,7 @@ pub fn create_agent(input: Form<MyForm>) -> String {
 
         let metadata_as_strings = input.metadata;
         let mut metadata = Vec::<KeyValueEntry>::new();
-        for meta in metadata_as_strings {
+        for meta in metadata_as_strings.chars() {
             let key_val: Vec<&str> = meta.split(",").collect();
             if key_val.len() != 2 {
                 return Err(CliError::UserError(

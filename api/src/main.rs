@@ -19,7 +19,7 @@ extern crate protobuf;
 extern crate uuid;
 
 extern crate addresser;
-#[macro_use] extern crate clap;
+//#[macro_use] extern crate clap;
 extern crate crypto;
 extern crate futures;
 extern crate hyper;
@@ -33,7 +33,7 @@ mod key;
 mod payload;
 mod protos;
 mod transaction;
-mod submit_batch_list;
+mod do_create;
 
 mod openapi;
 mod routes;

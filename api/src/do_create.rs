@@ -80,7 +80,7 @@ use sawtooth_sdk::signing::PrivateKey;
 //use submit_batch_list::submit_batch_list;
 
 use protos::payload::SmartPayload;
-use protos::state::KeyValueEntry;
+//use protos::state::KeyValueEntry;
 
 //use protobuf::Message;
 
