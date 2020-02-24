@@ -46,19 +46,8 @@ use sawtooth_sdk::signing;
 //use sawtooth_sdk::signing::PrivateKey;
 //use key::load_signing_key;
 use protos::state::KeyValueEntry;
+use rocket::request::{FromForm, FormItems};
 
-#[derive(FromForm)]
-struct Item { 
-    private_key: String, 
-    org_id: String, 
-    roles: String, 
-    metadata: String
-}
-/*
-struct Item {
-    field: String
-}
-*/
 impl<'f> FromForm<'f> for Item {
     // In practice, we'd use a more descriptive error type.
     type Error = ();
@@ -79,6 +68,14 @@ impl<'f> FromForm<'f> for Item {
 
         field.map(|field| Item { field }).ok_or(())
     }
+}
+
+#[derive(FromForm)]
+struct Item { 
+    private_key: String, 
+    org_id: String, 
+    roles: String, 
+    metadata: String
 }
 
 #[post("/agent", format = "application/octet-stream", data = "<input>")]
