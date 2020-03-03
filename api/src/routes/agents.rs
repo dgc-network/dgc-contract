@@ -48,7 +48,7 @@ use sawtooth_sdk::signing;
 use protos::state::KeyValueEntry;
 use rocket::request::{FromForm, FormItems};
 
-#[derive(FromForm)]
+//#[derive(FromForm)]
 struct Item { 
     private_key: String, 
     org_id: String, 
@@ -124,7 +124,7 @@ pub fn create_agent(input: Form<Item>) -> String {
         let context = signing::create_context("secp256k1");
         let public_key = context.get_public_key(private_key);
     
-        let payload = create_agent_payload(org_id, public_key, roles, metadata);
+        let payload = create_agent_payload(&org_id, public_key, roles, metadata);
     
         do_create(&url, &private_key, &payload, &output);
     
