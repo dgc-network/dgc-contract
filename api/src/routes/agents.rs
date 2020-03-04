@@ -52,10 +52,100 @@ use rocket::request::{FromForm, FormItems};
 struct Item { 
     private_key: String, 
     org_id: String, 
-    roles: String, 
-    metadata: String
+    roles: Vec<&str>, 
+    metadata: Vec<KeyValueEntry>
 }
 
+impl<'f> FromForm<'f> for Item{
+    type Error = String;
+
+    fn from_form(form_items: &mut FormItems<'f>, strict: bool) -> Result<Self, String> {
+        let mut private_key = None;
+        let mut org_id = None;
+        let mut roles = None;
+        let mut metadata = None;
+
+        for form_item in form_items {
+            let (key, value) = form_item.key_value();
+            // Note: we explicitly decode in the match arms to save work rather
+            // than decoding every form item blindly.
+            match key.as_str() {
+                "private_key" => {
+                    if private_key.is_some() {
+                        return Err("private_key parameter must not occur more than once".to_owned());
+                    } else {
+                        match value.url_decode() {
+                            Ok(v) => private_key = Some(v),
+                            Err(e) => return Err(e.to_string()),
+                        }
+                    }
+                }
+                "org_id" => {
+                    if org_id.is_some() {
+                        return Err("org_id parameter must not occur more than once".to_owned());
+                    } else {
+                        match value.url_decode() {
+                            Ok(v) => org_id = Some(v),
+                            Err(e) => return Err(e.to_string()),
+                        }
+                    }
+                }
+                "roles" => {
+                    if roles.is_some() {
+                        return Err("roles parameter must not occur more than once".to_owned());
+                    } else {
+                        match value.url_decode() {
+                            Ok(v) => roles = Some(v),
+                            Err(e) => return Err(e.to_string()),
+                        }
+                    }
+                }
+                "metadata" => {
+                    if metadata.is_some() {
+                        return Err("metadata parameter must not occur more than once".to_owned());
+                    } else {
+                        match value.url_decode() {
+                            Ok(v) => metadata = Some(v),
+                            Err(e) => return Err(e.to_string()),
+                        }
+                    }
+                }
+/*                
+                "roles" => {
+                    if roles.is_some() {
+                        return Err("roles parameter must not occur more than once".to_owned());
+                    } else {
+                        let decoded;
+                        match value.url_decode() {
+                            Ok(v) => decoded = v,
+                            Err(e) => return Err(e.to_string()),
+                        }
+                        roles = Some(
+                            serde_json::from_str::<InputValue<_>>(&decoded)
+                                .map_err(|err| err.to_string())?,
+                        );
+                    }
+                }
+*/                
+                _ => {
+                    if strict {
+                        return Err(format!("Prohibited extra field '{}'", key).to_owned());
+                    }
+                }
+            }
+        }
+/*
+        if let Some(query) = query {
+            Ok(GraphQLRequest(GraphQLBatchRequest::Single(
+                http::GraphQLRequest::new(query, operation_name, variables),
+            )))
+        } else {
+            Err("Query parameter missing".to_owned())
+        }
+*/        
+    }
+}
+/*
 impl<'f> FromForm<'f> for Item {
     // In practice, we'd use a more descriptive error type.
     type Error = ();
@@ -77,7 +167,7 @@ impl<'f> FromForm<'f> for Item {
         field.map(|field| Item { field }).ok_or(())
     }
 }
-
+*/
 #[post("/agent", format = "application/octet-stream", data = "<input>")]
 pub fn create_agent(input: Form<Item>) -> String {
     if input.private_key.is_empty() {
@@ -92,6 +182,19 @@ pub fn create_agent(input: Form<Item>) -> String {
 
         let metadata_as_strings = input.metadata;
         let mut metadata = Vec::<KeyValueEntry>::new();
+/*
+        let strings = "bananas,apples,pear".split(",");
+        for s in strings {
+            println!("{}", s)
+        }
+        let strings: Vec<&str> = "bananas,apples,pear".split(",").collect(); // ["bananas", "apples", "pear"]
+
+        let mut split = "some string 123 ffd".split("123");
+        for s in split {
+            println!("{}", s)
+        }
+        let vec = split.collect::<Vec<&str>>();
+*/
         for meta in metadata_as_strings.chars() {
             let key_val: Vec<&str> = meta.split(",").collect();
             if key_val.len() != 2 {
