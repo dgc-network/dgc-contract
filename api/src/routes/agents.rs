@@ -56,7 +56,7 @@ struct Item {
     metadata: Vec<KeyValueEntry>
 }
 
-impl<'f> FromForm<'f> for Item{
+impl<'f> FromForm<'f> for Item {
     type Error = String;
 
     fn from_form(form_items: &mut FormItems<'f>, strict: bool) -> Result<Self, String> {
