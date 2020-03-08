@@ -47,7 +47,57 @@ use sawtooth_sdk::signing;
 //use key::load_signing_key;
 use protos::state::KeyValueEntry;
 use rocket::request::{FromForm, FormItems};
+use rocket::{Request, data::Data};
 
+#[derive(Debug, Serialize, Deserialize)]
+struct Person {
+    name: String,
+    age: u8,
+}
+/*
+// In a `GET` request and all other non-payload supporting request types, the
+// preferred media type in the Accept header is matched against the `format` in
+// the route attribute. Note: if this was a real application, we'd use
+// `rocket_contrib`'s built-in JSON support and return a `JsonValue` instead.
+#[get("/<name>/<age>", format = "json")]
+fn get_hello(name: String, age: u8) -> Json<String> {
+    // NOTE: In a real application, we'd use `rocket_contrib::json::Json`.
+    let person = Person { name: name, age: age, };
+    Json(serde_json::to_string(&person).unwrap())
+}
+*/
+// In a `POST` request and all other payload supporting request types, the
+// content type is matched against the `format` in the route attribute.
+//
+// Note that `content::Json` simply sets the content-type to `application/json`.
+// In a real application, we wouldn't use `serde_json` directly; instead, we'd
+// use `contrib::Json` to automatically serialize a type into JSON.
+#[post("/agent", format = "application/octet-stream", data = "<input>")]
+pub fn create_agent(input: Data) -> Result<Json<String>, Debug<io::Error>> {
+    let mut private_key = String::with_capacity(32);
+    input.open().take(32).read_to_string(&mut private_key)?;
+
+    if private_key.is_empty() {
+        Ok(Json("PrivateKey cannot be empty.".to_string()))
+    } else {
+        let context = signing::create_context("secp256k1");
+        let public_key = context.get_public_key(private_key);    
+        let payload = create_agent_payload(&org_id, public_key, roles, metadata);    
+        do_create(&url, &private_key, &payload, &output);
+        Ok(Json("Data added.".to_string()))
+    }
+}
+/*
+#[post("/<age>", format = "plain", data = "<name_data>")]
+fn post_hello(age: u8, name_data: Data) -> Result<Json<String>, Debug<io::Error>> {
+    let mut name = String::with_capacity(32);
+    name_data.open().take(32).read_to_string(&mut name)?;
+    let person = Person { name: name, age: age, };
+    // NOTE: In a real application, we'd use `rocket_contrib::json::Json`.
+    Ok(Json(serde_json::to_string(&person).expect("valid JSON")))
+}
+*/
+/*
 //#[derive(FromForm)]
 struct Item { 
     private_key: String, 
@@ -234,6 +284,7 @@ pub fn create_agent(input: Form<Item>) -> String {
         "Data added.".to_string()
     }
 }
+*/
 /*
 pub fn create_agent(
     //conn: ValidatorConn, 

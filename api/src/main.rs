@@ -1,16 +1,13 @@
 // Copyright (c) The dgc.network
 // SPDX-License-Identifier: Apache-2.0
 
-//#![feature(plugin, decl_macro, custom_derive)]
-//#![plugin(rocket_codegen)]
-
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use] extern crate rocket;
-//extern crate rocket;
-extern crate rocket_cors;
 #[macro_use] extern crate rocket_contrib;
 #[macro_use] extern crate serde_derive;
+//extern crate rocket;
+extern crate rocket_cors;
 extern crate serde_yaml;
 extern crate serde_json;
 extern crate dgc_db;
@@ -56,6 +53,30 @@ fn hello() -> &'static str {
     "Hello, world!"
 }
 
+#[catch(404)]
+fn not_found() -> JsonValue {
+    json!({
+        "status": "error",
+        "reason": "Resource was not found."
+    })
+}
+
+fn rocket() -> rocket::Rocket {
+    rocket::ignite()
+        .mount("/", routes![
+            agents::create_agent,
+            agents::get_agent,
+            agents::get_agents,
+            organizations::get_org,
+            organizations::get_orgs,
+            hello])
+        .register(catchers![not_found])
+}
+
+fn main() {
+    rocket().launch();
+}
+/*
 //#[error(404)]
 #[catch(404)]
 fn not_found(_: &rocket::Request) -> Json<JsonValue> {
@@ -127,3 +148,4 @@ fn main() -> Result<(), Error> {
 //mod trans;
 //mod protos;
 
+*/

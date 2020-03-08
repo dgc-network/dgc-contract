@@ -137,19 +137,19 @@ services:
     ports:
       - 9003:8080
 
-  dgc-client:
-    image: dgc-client
-    container_name: dgc-client
-    entrypoint: "bash -c \"\
-      cd /project/cli && \
-      cargo build && \
-      tail -f /dev/null \
-      \""
-    volumes:
-      - .:/project
-      - ./keys:/root/.sawtooth/keys
-    build:
-      context: ./cli
+  #dgc-client:
+    #image: dgc-client
+    #container_name: dgc-client
+    #entrypoint: "bash -c \"\
+    #  cd /project/cli && \
+    #  cargo build && \
+    #  tail -f /dev/null \
+    #  \""
+    #volumes:
+    #  - .:/project
+    #  - ./keys:/root/.sawtooth/keys
+    #build:
+    #  context: ./cli
 
   dgc-tp:
     image: dgc-tp
