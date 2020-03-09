@@ -47,13 +47,19 @@ use sawtooth_sdk::signing;
 //use key::load_signing_key;
 use protos::state::KeyValueEntry;
 use rocket::request::{FromForm, FormItems};
-use rocket::{Request, data::Data};
+use std::io::{self, Read};
+use rocket::{Request, data::Data, response::Debug};
+//use rocket::response::{Debug, content::{Json, Html}};
+use sawtooth_sdk::signing::CryptoFactory;
+use sawtooth_sdk::signing::create_context;
 
+/*
 #[derive(Debug, Serialize, Deserialize)]
 struct Person {
     name: String,
     age: u8,
 }
+*/
 /*
 // In a `GET` request and all other non-payload supporting request types, the
 // preferred media type in the Accept header is matched against the `format` in
@@ -72,16 +78,31 @@ fn get_hello(name: String, age: u8) -> Json<String> {
 // Note that `content::Json` simply sets the content-type to `application/json`.
 // In a real application, we wouldn't use `serde_json` directly; instead, we'd
 // use `contrib::Json` to automatically serialize a type into JSON.
-#[post("/agent", format = "application/octet-stream", data = "<input>")]
-pub fn create_agent(input: Data) -> Result<Json<String>, Debug<io::Error>> {
-    let mut private_key = String::with_capacity(32);
-    input.open().take(32).read_to_string(&mut private_key)?;
+//use rocket::request::Form;
+use rocket::http::RawStr;
 
-    if private_key.is_empty() {
+#[derive(FromForm)]
+struct UserInput<'f> {
+    private_key: &'f RawStr
+    org_id: String, 
+    roles: Vec<&str>, 
+    metadata: Vec<KeyValueEntry>
+}
+
+#[post("/agent", format = "application/octet-stream", data = "<input>")]
+pub fn create_agent(input: Form<UserInput>) -> Result<Json<String>, Debug<io::Error>> {
+
+    if input.private_key.is_empty() {
         Ok(Json("PrivateKey cannot be empty.".to_string()))
     } else {
-        let context = signing::create_context("secp256k1");
-        let public_key = context.get_public_key(private_key);    
+        let context = signing::create_context("secp256k1")
+            .expect("Error creating the right context");
+        let private_key = context.new_random_private_key()
+            .expect("Error generating a new Private Key");
+        let crypto_factory = CryptoFactory::new(context.as_ref());
+        let signer = crypto_factory.new_signer(private_key.as_ref());
+        let public_key = signer.get_public_key();    
+    
         let payload = create_agent_payload(&org_id, public_key, roles, metadata);    
         do_create(&url, &private_key, &payload, &output);
         Ok(Json("Data added.".to_string()))

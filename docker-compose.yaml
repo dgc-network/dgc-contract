@@ -137,19 +137,19 @@ services:
     ports:
       - 9003:8080
 
-  #dgc-client:
-    #image: dgc-client
-    #container_name: dgc-client
-    #entrypoint: "bash -c \"\
-    #  cd /project/cli && \
-    #  cargo build && \
-    #  tail -f /dev/null \
-    #  \""
-    #volumes:
-    #  - .:/project
-    #  - ./keys:/root/.sawtooth/keys
-    #build:
-    #  context: ./cli
+#  dgc-client:
+#    image: dgc-client
+#    container_name: dgc-client
+#    entrypoint: "bash -c \"\
+#      cd /project/cli && \
+#      cargo build && \
+#      tail -f /dev/null \
+#      \""
+#    volumes:
+#      - .:/project
+#      - ./keys:/root/.sawtooth/keys
+#    build:
+#      context: ./cli
 
   dgc-tp:
     image: dgc-tp
@@ -164,20 +164,20 @@ services:
     build:
       context: ./tp
 
-  dgc-sde-service:
-    image: dgc-sde-service
-    container_name: dgc-sde-service
-    environment:
-      DATABASE_URL: postgres://dgc:dgc@dgc-db:5432/dgc
-    entrypoint: "bash -c \"
-      cd /project/state_delta_export && \
-      cargo build && \
-      dgc-sde -vv -c tcp://validator:9004 \""
-    volumes:
-      - .:/project
-    build:
-      context: ./state_delta_export/
-    depends_on:
-      - validator
-      - rest-api
-      - dgc-db
+#  dgc-sde-service:
+#    image: dgc-sde-service
+#    container_name: dgc-sde-service
+#    environment:
+#      DATABASE_URL: postgres://dgc:dgc@dgc-db:5432/dgc
+#    entrypoint: "bash -c \"
+#      cd /project/state_delta_export && \
+#      cargo build && \
+#      dgc-sde -vv -c tcp://validator:9004 \""
+#    volumes:
+#      - .:/project
+#    build:
+#      context: ./state_delta_export/
+#    depends_on:
+#      - validator
+#      - rest-api
+#      - dgc-db
