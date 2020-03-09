@@ -83,7 +83,7 @@ use rocket::http::RawStr;
 
 #[derive(FromForm)]
 struct UserInput<'f> {
-    private_key: &'f RawStr
+    private_key: &'f RawStr,
     org_id: String, 
     roles: Vec<&str>, 
     metadata: Vec<KeyValueEntry>
