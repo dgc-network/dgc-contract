@@ -32,18 +32,18 @@ pub fn get_agents(conn: DbConn) -> Json<Vec<Agent>> {
 //use rocket::response::status::Custom;
 //use guard::validator_conn::ValidatorConn;
 //use submit::{submit_batches, check_batch_status, BatchStatus};
-use submit::TransactionError as error;
+//use submit::TransactionError as error;
 use rocket::request::Form;
-use error::CliError;
+//use error::CliError;
 use do_create::do_create;
 use payload::{
-    create_agent_payload,
-    create_org_payload,
-    update_agent_payload,
-    update_org_payload
+    create_agent_payload
+//    create_org_payload,
+//    update_agent_payload,
+//    update_org_payload
 };
 use sawtooth_sdk::signing;
-//use sawtooth_sdk::signing::PrivateKey;
+use sawtooth_sdk::signing::PrivateKey;
 //use key::load_signing_key;
 use protos::state::KeyValueEntry;
 use rocket::request::{FromForm, FormItems};
@@ -51,7 +51,8 @@ use std::io::{self, Read};
 use rocket::{Request, data::Data, response::Debug};
 //use rocket::response::{Debug, content::{Json, Html}};
 use sawtooth_sdk::signing::CryptoFactory;
-use sawtooth_sdk::signing::create_context;
+//use sawtooth_sdk::signing::create_context;
+use sawtooth_sdk::signing::secp256k1::Secp256k1PrivateKey;
 
 /*
 #[derive(Debug, Serialize, Deserialize)]
@@ -79,18 +80,29 @@ fn get_hello(name: String, age: u8) -> Json<String> {
 // In a real application, we wouldn't use `serde_json` directly; instead, we'd
 // use `contrib::Json` to automatically serialize a type into JSON.
 //use rocket::request::Form;
-use rocket::http::RawStr;
+//use rocket::http::RawStr;
 
 #[derive(FromForm)]
-struct UserInput<'f> {
-    private_key: &'f RawStr,
+struct UserInput {
+    private_key: String,
     org_id: String, 
-    roles: Vec<&str>, 
-    metadata: Vec<KeyValueEntry>
+    roles: String, 
+    metadata: String
 }
 
 #[post("/agent", format = "application/octet-stream", data = "<input>")]
 pub fn create_agent(input: Form<UserInput>) -> Result<Json<String>, Debug<io::Error>> {
+
+    let url = "http://dgc-api:9001";
+    let output = "";
+    let mut private_key = PrivateKey::new();
+    let mut private_key = Secp256k1PrivateKey.
+    //(input.into_inner().private_key);
+    let org_id = input.into_inner().org_id;
+    let mut roles = Vec::new();
+    //input.into_inner().roles;
+    let mut metadata = Vec::new();
+    //input.into_inner().metadata;
 
     if input.private_key.is_empty() {
         Ok(Json("PrivateKey cannot be empty.".to_string()))
@@ -101,7 +113,9 @@ pub fn create_agent(input: Form<UserInput>) -> Result<Json<String>, Debug<io::Er
             .expect("Error generating a new Private Key");
         let crypto_factory = CryptoFactory::new(context.as_ref());
         let signer = crypto_factory.new_signer(private_key.as_ref());
-        let public_key = signer.get_public_key();    
+        let public_key = signer.get_public_key()
+            .expect("Error retrieving Public Key")
+            .as_hex();    
     
         let payload = create_agent_payload(&org_id, public_key, roles, metadata);    
         do_create(&url, &private_key, &payload, &output);
