@@ -3,18 +3,16 @@
 
 #![feature(proc_macro_hygiene, decl_macro)]
 
-#[macro_use]
-extern crate rocket;
-#[macro_use]
-extern crate rocket_contrib;
-use rocket_cors;
+#[macro_use] extern crate rocket;
+#[macro_use] extern crate rocket_contrib;
+//use rocket_cors;
+extern crate rocket_cors;
 
-#[macro_use]
-extern crate diesel;
+#[macro_use] extern crate diesel;
 
-#[macro_use]
-extern crate validator_derive;
+#[macro_use] extern crate validator_derive;
 
+extern crate dotenv;
 use dotenv::dotenv;
 
 mod auth;

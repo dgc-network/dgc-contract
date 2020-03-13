@@ -1,3 +1,9 @@
+// Copyright (c) The dgc.network
+// SPDX-License-Identifier: Apache-2.0
+
+extern crate serde;
+extern crate jsonwebtoken;
+
 use rocket::http::Status;
 use rocket::request::{self, FromRequest, Request};
 use rocket::{Outcome, State};
