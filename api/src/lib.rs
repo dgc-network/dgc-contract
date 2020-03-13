@@ -13,6 +13,7 @@ extern crate rocket_cors;
 extern crate serde;
 extern crate jsonwebtoken;
 extern crate dotenv;
+extern crate validator;
 
 mod auth;
 mod config;
