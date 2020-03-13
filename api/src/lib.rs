@@ -5,15 +5,14 @@
 
 #[macro_use] extern crate rocket;
 #[macro_use] extern crate rocket_contrib;
-//use rocket_cors;
-extern crate rocket_cors;
-
 #[macro_use] extern crate diesel;
-
 #[macro_use] extern crate validator_derive;
 
+//use rocket_cors;
+extern crate rocket_cors;
+extern crate serde;
+extern crate jsonwebtoken;
 extern crate dotenv;
-use dotenv::dotenv;
 
 mod auth;
 mod config;
@@ -23,6 +22,7 @@ mod models;
 mod routes;
 mod schema;
 
+use dotenv::dotenv;
 use rocket_contrib::json::JsonValue;
 use rocket_cors::Cors;
 
