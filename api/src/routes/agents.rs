@@ -10,6 +10,7 @@ use rocket::State;
 use rocket_contrib::json::{Json, JsonValue};
 use serde::Deserialize;
 use validator::Validate;
+use submit::do_create;
 
 #[derive(Deserialize)]
 pub struct NewAgent {
@@ -18,29 +19,48 @@ pub struct NewAgent {
 
 #[derive(Deserialize, Validate)]
 struct NewAgentData {
+    org_id: &str,
+    //public_key: &str,
+    roles: Vec<String>,
+    metadata: Vec<KeyValueEntry>,
+    private_key: &str,
+
+    //private_key: String,
+    //org_id: String, 
+    //roles: String, 
+    //metadata: String
+/*
     #[validate(length(min = 1))]
     username: Option<String>,
     #[validate(email)]
     email: Option<String>,
     #[validate(length(min = 8))]
     password: Option<String>,
+*/
 }
 
 #[post("/agents", format = "json", data = "<new_agent>")]
 pub fn post_agents(
     new_agent: Json<NewAgent>,
-    conn: db::Conn,
+    //conn: db::Conn,
     state: State<AppState>,
 ) -> Result<JsonValue, Errors> {
     let new_agent = new_agent.into_inner().agent;
 
     let mut extractor = FieldValidator::validate(&new_agent);
-    let username = extractor.extract("username", new_agent.username);
-    let email = extractor.extract("email", new_agent.email);
-    let password = extractor.extract("password", new_agent.password);
+    let org_id = extractor.extract("org_id", new_agent.org_id);
+    let roles = extractor.extract("roles", new_agent.roles);
+    let metadata = extractor.extract("metadata", new_agent.metadata);
+    let private_key = extractor.extract("private_key", new_agent.private_key);
 
     extractor.check()?;
 
+    let url = "http://dgc-api:9001";
+    //let mut private_key = Secp256k1PrivateKey.as_hex();
+    let payload = create_agent_payload(&org_id, public_key, roles, metadata);    
+    let output = "";
+    do_create(&url, &private_key, &payload, &output);
+/*
     db::users::create(&conn, &username, &email, &password)
         .map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
         .map_err(|error| {
@@ -50,6 +70,7 @@ pub fn post_agents(
             };
             Errors::new(&[(field, "has already been taken")])
         })
+*/
 }
 
 #[derive(Deserialize)]

@@ -20,12 +20,15 @@ extern crate chrono;
 extern crate sawtooth_sdk;
 extern crate protobuf;
 extern crate uuid;
+extern crate hyper;
 
 mod auth;
 mod config;
 mod errors;
 mod schema;
 mod payload;
+mod submit;
+mod transaction;
 
 mod db;
 mod models;
