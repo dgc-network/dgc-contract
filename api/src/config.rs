@@ -1,3 +1,6 @@
+// Copyright (c) The dgc.network
+// SPDX-License-Identifier: Apache-2.0
+
 use rocket::fairing::AdHoc;
 use rocket::config::{Config, Environment, Value};
 use std::collections::HashMap;

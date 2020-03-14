@@ -7,7 +7,7 @@ use rocket::{Outcome, State};
 use serde::{Deserialize, Serialize};
 use crate::config::AppState;
 
-use jsonwebtoken as jwt;
+//use jsonwebtoken as jwt;
 
 use crate::config;
 

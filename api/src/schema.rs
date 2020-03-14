@@ -1,3 +1,6 @@
+// Copyright (c) The dgc.network
+// SPDX-License-Identifier: Apache-2.0
+
 table! {
     articles (id) {
         id -> Int4,

@@ -1,3 +1,6 @@
+// Copyright (c) The dgc.network
+// SPDX-License-Identifier: Apache-2.0
+
 use rocket::http::Status;
 use rocket::request::Request;
 use rocket::response::status;
