@@ -61,3 +61,6 @@ default = ["random-suffix"]
 # Enable generation of random suffix when making article slug. This
 # allows having multiple articles with the same title.
 random-suffix = []
+
+[build-dependencies]
+protoc-rust = "2"
