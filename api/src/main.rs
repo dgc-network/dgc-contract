@@ -49,10 +49,10 @@ fn rocket() -> rocket::Rocket {
         .mount(
             "/api",
             routes![
-                routes::users::post_agents,
-                routes::users::post_agents_login,
-                routes::users::put_agent,
-                routes::users::get_agent,
+                routes::agents::post_agents,
+                routes::agents::post_agents_login,
+                routes::agents::put_agent,
+                routes::agents::get_agent,
                 routes::users::post_users,
                 routes::users::post_users_login,
                 routes::users::put_user,

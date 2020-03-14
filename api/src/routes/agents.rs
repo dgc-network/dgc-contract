@@ -65,7 +65,7 @@ struct LoginAgentData {
 
 #[post("/agents/login", format = "json", data = "<agent>")]
 pub fn post_agents_login(
-    user: Json<LoginAgent>,
+    agent: Json<LoginAgent>,
     conn: db::Conn,
     state: State<AppState>,
 ) -> Result<JsonValue, Errors> {
@@ -88,16 +88,16 @@ pub fn get_agent(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<J
 
 #[derive(Deserialize)]
 pub struct UpdateAgent {
-    user: db::users::UpdateUserData,
+    agent: db::users::UpdateUserData,
 }
 
 #[put("/agent", format = "json", data = "<agent>")]
 pub fn put_agent(
-    user: Json<UpdateAgent>,
+    agent: Json<UpdateAgent>,
     auth: Auth,
     conn: db::Conn,
     state: State<AppState>,
 ) -> Option<JsonValue> {
-    db::users::update(&conn, auth.id, &user.user)
+    db::users::update(&conn, auth.id, &agent.agent)
         .map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
 }
