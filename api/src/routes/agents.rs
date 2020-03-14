@@ -59,23 +59,23 @@ pub fn post_agents(
     let org_id = extractor.extract("org_id", new_agent.org_id);
     let roles = extractor.extract("roles", new_agent.roles);
     let metadata = extractor.extract("metadata", new_agent.metadata);
-    //let private_key = extractor.extract("private_key", new_agent.private_key);
+    let mut private_key = extractor.extract("private_key", new_agent.private_key);
 
     extractor.check()?;
 
     let url = "http://dgc-api:9001";
-    //let mut private_key = Secp256k1PrivateKey.as_hex();
     let context = signing::create_context("secp256k1")
         .expect("Error creating the right context");
-    let private_key = context.new_random_private_key()
-        .expect("Error generating a new Private Key");
+    //let private_key = context.new_random_private_key()
+    //    .expect("Error generating a new Private Key");
+    let private_key = hex::decode(private_key);
     let crypto_factory = signing::CryptoFactory::new(context.as_ref());
     let signer = crypto_factory.new_signer(private_key.as_ref());
     let public_key = signer.get_public_key()
         .expect("Error retrieving Public Key")
-        .as_hex();    
+        .as_hex();
 
-let payload = create_agent_payload(org_id, public_key, roles, metadata);    
+    let payload = create_agent_payload(org_id, public_key, roles, metadata);    
     let output = "";
     do_create(&url, &private_key, &payload, &output);
 /*
