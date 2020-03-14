@@ -42,6 +42,10 @@ slug = "0.1.4"
 rand = "0.7.2"
 dotenv = "0.15.0"
 jsonwebtoken = "6.0.1"
+sawtooth-sdk = {git = "https://github.com/hyperledger/sawtooth-sdk-rust"}
+#dgc_db = { path = "../db/dgc_db/" }
+protobuf = "2"
+uuid = { version = "0.5", features = ["v4"] }
 
 [dependencies.rocket_contrib]
 version = "0.4.2"

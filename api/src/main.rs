@@ -17,11 +17,16 @@ extern crate rand;
 extern crate slug;
 extern crate crypto;
 extern crate chrono;
+extern crate sawtooth_sdk;
+extern crate protobuf;
+extern crate uuid;
 
 mod auth;
 mod config;
 mod errors;
 mod schema;
+mod payload;
+
 mod db;
 mod models;
 mod routes;
