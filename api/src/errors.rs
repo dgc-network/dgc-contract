@@ -87,7 +87,7 @@ impl FieldValidator {
     }
 }
 
-//use std::io;
+use std::io;
 use hyper;
 use protobuf;
 use sawtooth_sdk::signing;

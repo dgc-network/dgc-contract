@@ -21,12 +21,16 @@ extern crate sawtooth_sdk;
 extern crate protobuf;
 extern crate uuid;
 extern crate hyper;
+extern crate addresser;
+extern crate futures;
+extern crate tokio_core;
 
 mod auth;
 mod config;
 mod errors;
 mod schema;
 mod payload;
+mod protos;
 mod submit;
 mod transaction;
 

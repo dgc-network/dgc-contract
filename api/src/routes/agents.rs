@@ -11,6 +11,14 @@ use rocket_contrib::json::{Json, JsonValue};
 use serde::Deserialize;
 use validator::Validate;
 use submit::do_create;
+use payload::{
+    create_agent_payload
+//    create_org_payload,
+//    update_agent_payload,
+//    update_org_payload
+};
+use protos::state::KeyValueEntry;
+use sawtooth_sdk::signing;
 
 #[derive(Deserialize)]
 pub struct NewAgent {
@@ -19,16 +27,16 @@ pub struct NewAgent {
 
 #[derive(Deserialize, Validate)]
 struct NewAgentData {
-    org_id: &str,
+    //org_id: &str,
     //public_key: &str,
-    roles: Vec<String>,
-    metadata: Vec<KeyValueEntry>,
-    private_key: &str,
+    //roles: Vec<String>,
+    //metadata: Vec<KeyValueEntry>,
+    //private_key: &str,
 
-    //private_key: String,
-    //org_id: String, 
-    //roles: String, 
-    //metadata: String
+    private_key: Option<String>,
+    org_id: Option<String>, 
+    roles: Option<String>, 
+    metadata: Option<String>
 /*
     #[validate(length(min = 1))]
     username: Option<String>,
@@ -51,13 +59,23 @@ pub fn post_agents(
     let org_id = extractor.extract("org_id", new_agent.org_id);
     let roles = extractor.extract("roles", new_agent.roles);
     let metadata = extractor.extract("metadata", new_agent.metadata);
-    let private_key = extractor.extract("private_key", new_agent.private_key);
+    //let private_key = extractor.extract("private_key", new_agent.private_key);
 
     extractor.check()?;
 
     let url = "http://dgc-api:9001";
     //let mut private_key = Secp256k1PrivateKey.as_hex();
-    let payload = create_agent_payload(&org_id, public_key, roles, metadata);    
+    let context = signing::create_context("secp256k1")
+        .expect("Error creating the right context");
+    let private_key = context.new_random_private_key()
+        .expect("Error generating a new Private Key");
+    let crypto_factory = signing::CryptoFactory::new(context.as_ref());
+    let signer = crypto_factory.new_signer(private_key.as_ref());
+    let public_key = signer.get_public_key()
+        .expect("Error retrieving Public Key")
+        .as_hex();    
+
+let payload = create_agent_payload(org_id, public_key, roles, metadata);    
     let output = "";
     do_create(&url, &private_key, &payload, &output);
 /*

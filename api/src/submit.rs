@@ -14,7 +14,7 @@ use tokio_core;
 
 use sawtooth_sdk::messages::batch::BatchList;
 
-use error::CliError;
+use errors::CliError;
 use protobuf::Message;
 
 use std::fs::File;

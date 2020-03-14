@@ -21,7 +21,7 @@ use sawtooth_sdk::signing::Signer;
 
 use addresser::{resource_to_byte, Resource};
 
-use error::CliError;
+use errors::CliError;
 use protos::payload;
 use protos::payload::SmartPayload_Action as Action;
 
