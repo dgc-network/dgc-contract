@@ -20,11 +20,11 @@ extern crate chrono;
 
 mod auth;
 mod config;
-mod db;
 mod errors;
+mod schema;
+mod db;
 mod models;
 mod routes;
-mod schema;
 
 use dotenv::dotenv;
 use rocket_contrib::json::JsonValue;
@@ -42,12 +42,17 @@ fn cors_fairing() -> Cors {
     Cors::from_options(&Default::default()).expect("Cors fairing cannot be created")
 }
 
-pub fn rocket() -> rocket::Rocket {
+//pub fn rocket() -> rocket::Rocket {
+fn rocket() -> rocket::Rocket {
     dotenv().ok();
     rocket::custom(config::from_env())
         .mount(
             "/api",
             routes![
+                routes::users::post_agents,
+                routes::users::post_agents_login,
+                routes::users::put_agent,
+                routes::users::get_agent,
                 routes::users::post_users,
                 routes::users::post_users_login,
                 routes::users::put_user,
