@@ -87,6 +87,8 @@ impl FieldValidator {
     }
 }
 
+use std::borrow::Borrow;
+use std::error::Error as StdError;
 use std::io;
 use hyper;
 use protobuf;
@@ -94,6 +96,7 @@ use sawtooth_sdk::signing;
 
 #[derive(Debug)]
 pub enum CliError {
+//pub struct CliError {
     /// The user has provided invalid inputs; the string by this error
     /// is appropriate for display to the user without additional context
     UserError(String),
@@ -102,15 +105,15 @@ pub enum CliError {
     ProtobufError(protobuf::ProtobufError),
     HyperError(hyper::Error),
 }
-/*
+
 impl StdError for CliError {
     fn description(&self) -> &str {
         match *self {
             CliError::UserError(ref s) => &s,
-            CliError::IoError(ref err) => err.description(),
-            CliError::SigningError(ref err) => err.description(),
-            CliError::ProtobufError(ref err) => err.description(),
-            CliError::HyperError(ref err) => err.description(),
+            CliError::IoError(ref err) => err.to_string(),
+            CliError::SigningError(ref err) => err.to_string(),
+            CliError::ProtobufError(ref err) => err.to_string(),
+            CliError::HyperError(ref err) => err.to_string(),
         }
     }
 
@@ -130,13 +133,13 @@ impl std::fmt::Display for CliError {
         match *self {
             CliError::UserError(ref s) => write!(f, "Error: {}", s),
             CliError::IoError(ref err) => write!(f, "IoError: {}", err),
-            CliError::SigningError(ref err) => write!(f, "SigningError: {}", err.description()),
-            CliError::ProtobufError(ref err) => write!(f, "ProtobufError: {}", err.description()),
-            CliError::HyperError(ref err) => write!(f, "HyperError: {}", err.description()),
+            CliError::SigningError(ref err) => write!(f, "SigningError: {}", err.to_string()),
+            CliError::ProtobufError(ref err) => write!(f, "ProtobufError: {}", err.to_string()),
+            CliError::HyperError(ref err) => write!(f, "HyperError: {}", err.to_string()),
         }
     }
 }
-*/
+
 impl From<io::Error> for CliError {
     fn from(e: io::Error) -> Self {
         CliError::IoError(e)
