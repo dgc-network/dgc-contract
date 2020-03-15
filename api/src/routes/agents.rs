@@ -58,7 +58,7 @@ pub fn post_agents(
     let mut extractor = FieldValidator::validate(&new_agent);
     let org_id = extractor.extract("org_id", new_agent.org_id);
     let roles = extractor.extract("roles", new_agent.roles);
-    let metadata = extractor.extract("metadata", new_agent.metadata);
+    let metadata_as_strings = extractor.extract("metadata", new_agent.metadata);
     let mut private_key = extractor.extract("private_key", new_agent.private_key);
 
     extractor.check()?;
@@ -68,12 +68,42 @@ pub fn post_agents(
         .expect("Error creating the right context");
     //let private_key = context.new_random_private_key()
     //    .expect("Error generating a new Private Key");
-    let private_key = hex::decode(private_key);
+    let private_key = signing::PrivateKey.as_hex(private_key);
     let crypto_factory = signing::CryptoFactory::new(context.as_ref());
     let signer = crypto_factory.new_signer(private_key.as_ref());
     let public_key = signer.get_public_key()
         .expect("Error retrieving Public Key")
         .as_hex();
+
+    let mut metadata = Vec::<KeyValueEntry>::new();
+    for meta in metadata_as_strings {
+        let key_val: Vec<&str> = meta.split(",").collect();
+        if key_val.len() != 2 {
+            return Err(CliError::UserError(
+                "Metadata is formated incorrectly".to_string(),
+            ));
+        }
+        let key = match key_val.get(0) {
+            Some(key) => key.to_string(),
+            None => {
+                return Err(CliError::UserError(
+                    "Metadata is formated incorrectly".to_string(),
+                ))
+            }
+        };
+        let value = match key_val.get(1) {
+            Some(value) => value.to_string(),
+            None => {
+                return Err(CliError::UserError(
+                    "Metadata is formated incorrectly".to_string(),
+                ))
+            }
+        };
+        let mut entry = KeyValueEntry::new();
+        entry.set_key(key);
+        entry.set_value(value);
+        metadata.push(entry.clone());
+    }
 
     let payload = create_agent_payload(org_id, public_key, roles, metadata);    
     let output = "";
