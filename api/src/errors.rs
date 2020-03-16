@@ -110,10 +110,10 @@ impl StdError for CliError {
     fn description(&self) -> &str {
         match *self {
             CliError::UserError(ref s) => &s,
-            CliError::IoError(ref err) => err.to_string(),
-            CliError::SigningError(ref err) => err.to_string(),
-            CliError::ProtobufError(ref err) => err.to_string(),
-            CliError::HyperError(ref err) => err.to_string(),
+            CliError::IoError(ref err) => &err.to_string(),
+            CliError::SigningError(ref err) => &err.to_string(),
+            CliError::ProtobufError(ref err) => &err.to_string(),
+            CliError::HyperError(ref err) => &err.to_string(),
         }
     }
 

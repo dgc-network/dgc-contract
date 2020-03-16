@@ -81,19 +81,15 @@ pub fn post_agents(
     for meta in metadata_as_strings.chars() {
         let key_val: Vec<&str> = meta.to_string().split(",").collect();
         if key_val.len() != 2 {
-            Errors::new(&[("Metadata", "is formated incorrectly")]);
+            "Metadata is formated incorrectly".to_string()
         }
         let key = match key_val.get(0) {
             Some(key) => key.to_string(),
-            None => {
-                Errors::new(&[("Metadata", "is formated incorrectly")]);
-            }
+            None => "Metadata is formated incorrectly".to_string()
         };
         let value = match key_val.get(1) {
             Some(value) => value.to_string(),
-            None => {
-                Errors::new(&[("Metadata", "is formated incorrectly")]);
-            }
+            None => "Metadata is formated incorrectly".to_string()
         };
         let mut entry = KeyValueEntry::new();
         entry.set_key(key);
@@ -104,8 +100,8 @@ pub fn post_agents(
     let payload = create_agent_payload(&org_id, &public_key, roles, metadata);    
     let output = "";
     do_create(&url, &private_key, &payload, &output);
-        .map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
-        .ok_or_else(|| Errors::new(&[("email or password", "is invalid")]))
+    Ok(json!({ "createAgent": "done" }))
+
 /*
     db::users::create(&conn, &username, &email, &password)
         .map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
