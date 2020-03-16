@@ -1,8 +1,7 @@
 // Copyright (c) The dgc.network
 // SPDX-License-Identifier: Apache-2.0
 
-//! Contains functions which assist with the creation of dgc Batches and
-//! Transactions
+//! Contains functions which assist with the creation of dgc Batches and Transactions
 
 use std::time::Instant;
 
@@ -21,6 +20,7 @@ use sawtooth_sdk::signing::Signer;
 
 use addresser::{resource_to_byte, Resource};
 
+//use errors::Errors;
 use errors::CliError;
 use protos::payload;
 use protos::payload::SmartPayload_Action as Action;
@@ -103,8 +103,8 @@ pub fn create_transaction(
     payload: &payload::SmartPayload,
     signer: &Signer,
     public_key: &String,
-//) -> Result<Transaction, CliError> {
-) -> Result<Transaction, Errors> {
+) -> Result<Transaction, CliError> {
+//) -> Result<Transaction, Errors> {
     let mut txn = Transaction::new();
     let mut txn_header = TransactionHeader::new();
 
@@ -189,8 +189,8 @@ pub fn create_batch(
     txn: Transaction,
     signer: &Signer,
     public_key: &String,
-//) -> Result<Batch, CliError> {
-) -> Result<Batch, Errors> {
+) -> Result<Batch, CliError> {
+//) -> Result<Batch, Errors> {
     let mut batch = Batch::new();
     let mut batch_header = BatchHeader::new();
 

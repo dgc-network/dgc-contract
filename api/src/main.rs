@@ -27,6 +27,7 @@ extern crate tokio_core;
 
 mod auth;
 mod config;
+mod error;
 mod errors;
 mod schema;
 mod payload;
