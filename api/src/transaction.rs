@@ -103,7 +103,8 @@ pub fn create_transaction(
     payload: &payload::SmartPayload,
     signer: &Signer,
     public_key: &String,
-) -> Result<Transaction, CliError> {
+//) -> Result<Transaction, CliError> {
+) -> Result<Transaction, Errors> {
     let mut txn = Transaction::new();
     let mut txn_header = TransactionHeader::new();
 
@@ -188,7 +189,8 @@ pub fn create_batch(
     txn: Transaction,
     signer: &Signer,
     public_key: &String,
-) -> Result<Batch, CliError> {
+//) -> Result<Batch, CliError> {
+) -> Result<Batch, Errors> {
     let mut batch = Batch::new();
     let mut batch_header = BatchHeader::new();
 

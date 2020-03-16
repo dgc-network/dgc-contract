@@ -4,7 +4,7 @@
 use crate::auth::Auth;
 use crate::config::AppState;
 use crate::db::{self, users::UserCreationError};
-use crate::errors::{Errors, FieldValidator, CliError};
+use crate::errors::{Errors, FieldValidator};
 
 use rocket::State;
 use rocket_contrib::json::{Json, JsonValue};
@@ -65,38 +65,15 @@ pub fn post_agents(
     let private_key = signing::secp256k1::Secp256k1PrivateKey::from_hex(&private_key_hex_string)
         .expect("Error retrieving Private Key");
     let crypto_factory = signing::CryptoFactory::new(context.as_ref());
-    let signer = crypto_factory.new_signer(&private_key.as_ref());
+    //let signer = crypto_factory.new_signer(&private_key.as_ref());
+    let signer = crypto_factory.new_signer(&private_key);
     let public_key = signer.get_public_key()
         .expect("Error retrieving Public Key")
         .as_hex();
 
     let mut roles = Vec::<String>::new();
     for role in roles_as_strings.chars() {
-        let key_val: Vec<&str> = role.to_string().split(",").collect();
-        if key_val.len() != 2 {
-            //return Err(CliError::UserError(
-            //    "Metadata is formated incorrectly".to_string(),
-            //));
-        }
-        let key = match key_val.get(0) {
-            Some(key) => key.to_string(),
-            //None => {
-            //    return Err(CliError::UserError(
-            //        "Metadata is formated incorrectly".to_string(),
-            //    ))
-            //}
-        };
-        let value = match key_val.get(1) {
-            Some(value) => value.to_string(),
-            //None => {
-            //    return Err(CliError::UserError(
-            //        "Metadata is formated incorrectly".to_string(),
-            //    ))
-            //}
-        };
-        let mut entry = KeyValueEntry::new();
-        entry.set_key(key);
-        entry.set_value(value);
+        let entry: String = role.to_string().split(",").collect();
         roles.push(entry.clone());
     }
 
@@ -104,25 +81,19 @@ pub fn post_agents(
     for meta in metadata_as_strings.chars() {
         let key_val: Vec<&str> = meta.to_string().split(",").collect();
         if key_val.len() != 2 {
-            //return Err(CliError::UserError(
-            //    "Metadata is formated incorrectly".to_string(),
-            //));
+            Errors::new(&[("Metadata", "is formated incorrectly")]);
         }
         let key = match key_val.get(0) {
             Some(key) => key.to_string(),
-            //None => {
-            //    return Err(CliError::UserError(
-            //        "Metadata is formated incorrectly".to_string(),
-            //    ))
-            //}
+            None => {
+                Errors::new(&[("Metadata", "is formated incorrectly")]);
+            }
         };
         let value = match key_val.get(1) {
             Some(value) => value.to_string(),
-            //None => {
-            //    return Err(CliError::UserError(
-            //        "Metadata is formated incorrectly".to_string(),
-            //    ))
-            //}
+            None => {
+                Errors::new(&[("Metadata", "is formated incorrectly")]);
+            }
         };
         let mut entry = KeyValueEntry::new();
         entry.set_key(key);
@@ -130,9 +101,11 @@ pub fn post_agents(
         metadata.push(entry.clone());
     }
 
-    let payload = create_agent_payload(org_id, &public_key, roles, metadata);    
+    let payload = create_agent_payload(&org_id, &public_key, roles, metadata);    
     let output = "";
     do_create(&url, &private_key, &payload, &output);
+        .map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
+        .ok_or_else(|| Errors::new(&[("email or password", "is invalid")]))
 /*
     db::users::create(&conn, &username, &email, &password)
         .map(|user| json!({ "user": user.to_user_auth(&state.secret) }))

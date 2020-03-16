@@ -14,7 +14,7 @@ use tokio_core;
 
 use sawtooth_sdk::messages::batch::BatchList;
 
-use errors::CliError;
+use errors::Errors;
 use protobuf::Message;
 
 use std::fs::File;
@@ -39,12 +39,14 @@ pub fn do_create(
     private_key: &dyn PrivateKey,
     payload: &SmartPayload,
     output: &str
-) -> Result<(), CliError> {
+//) -> Result<(), CliError> {
+) -> Result<(), Errors> {
 
     if !output.is_empty() {
         let mut buffer = File::create(output)?;
         let payload_bytes = payload.write_to_bytes()?;
-        buffer.write_all(&payload_bytes).map_err(|err| CliError::IoError(err))?;
+        //buffer.write_all(&payload_bytes).map_err(|err| CliError::IoError(err))?;
+        buffer.write_all(&payload_bytes).map_err(|err| Errors::new(&[("IoError:", format!("{}", err))])?;
         return Ok(())
     }
 
@@ -67,23 +69,31 @@ pub fn do_create(
 fn submit_batch_list(
     url: &str, 
     batch_list: &BatchList
-) -> Result<(), CliError> {
+//) -> Result<(), CliError> {
+) -> Result<(), Errors> {
     let hyper_uri = match url.parse::<hyper::Uri>() {
         Ok(uri) => uri,
-        Err(e) => return Err(CliError::UserError(format!("Invalid URL: {}: {}", e, url))),
+        Err(e) => Errors::new(&[("Invalid URL:", format!(
+            "{}: {}", e, url
+        ))]);
+        //Err(e) => return Err(CliError::UserError(format!("Invalid URL: {}: {}", e, url))),
     };
 
     match hyper_uri.scheme() {
         Some(scheme) => {
             if scheme != "http" {
-                return Err(CliError::UserError(format!(
-                    "Unsupported scheme ({}) in URL: {}",
-                    scheme, url
-                )));
+                Errors::new(&[("Unsupported scheme", format!(
+                    "({}) in URL: {}", scheme, url
+                ))]);
+                //return Err(CliError::UserError(format!(
+                //    "Unsupported scheme ({}) in URL: {}",
+                //    scheme, url
+                //)));
             }
         }
         None => {
-            return Err(CliError::UserError(format!("No scheme in URL: {}", url)));
+            Errors::new(&[("No scheme", format!("in URL: {}", url))]);
+            //return Err(CliError::UserError(format!("No scheme in URL: {}", url)));
         }
     }
 

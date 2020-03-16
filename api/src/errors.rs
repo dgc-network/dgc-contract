@@ -86,7 +86,7 @@ impl FieldValidator {
         })
     }
 }
-
+/*
 use std::borrow::Borrow;
 use std::error::Error as StdError;
 use std::io;
@@ -163,3 +163,4 @@ impl From<hyper::Error> for CliError {
         CliError::HyperError(e)
     }
 }
+*/
