@@ -17,8 +17,14 @@ use payload::{
 //    update_agent_payload,
 //    update_org_payload
 };
-use protos::state::KeyValueEntry;
+//use protos::state::KeyValueEntry;
+use protos::state::{
+    KeyValueEntry,
+    Agent, AgentList, 
+    Organization, OrganizationList
+};
 use sawtooth_sdk::signing;
+use addresser::{resource_to_byte, Resource};
 
 #[derive(Deserialize)]
 pub struct NewAgent {
@@ -117,6 +123,22 @@ pub fn post_agents(
 }
 
 #[derive(Deserialize)]
+pub struct UpdateAgent {
+    agent: db::users::UpdateUserData,
+}
+
+#[put("/agent", format = "json", data = "<agent>")]
+pub fn put_agent(
+    agent: Json<UpdateAgent>,
+    auth: Auth,
+    conn: db::Conn,
+    state: State<AppState>,
+) -> Option<JsonValue> {
+    db::users::update(&conn, auth.id, &agent.agent)
+        .map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
+}
+
+#[derive(Deserialize)]
 pub struct LoginAgent {
     agent: LoginAgentData,
 }
@@ -146,22 +168,43 @@ pub fn post_agents_login(
 }
 
 #[get("/agent")]
-pub fn get_agent(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<JsonValue> {
-    db::users::find(&conn, auth.id).map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
+pub fn get_agent(
+    &mut self, 
+    public_key: &str
+) -> Result<Option<Agent>, ApplyError> {
+    let address = compute_address(public_key, Resource::AGENT);
+    let d = self.context.get_state_entry(&address)?;
+    match d {
+        Some(packed) => {
+            let agents: AgentList = match protobuf::parse_from_bytes(packed.as_slice()) {
+                Ok(agents) => agents,
+                Err(err) => {
+                    return Err(ApplyError::InternalError(format!(
+                        "Cannot deserialize record container: {:?}",
+                        err,
+                    )))
+                }
+            };
+
+            for agent in agents.get_agents() {
+                if agent.public_key == public_key {
+                    return Ok(Some(agent.clone()));
+                }
+            }
+            Ok(None)
+        }
+        None => Ok(None),
+    }
 }
 
-#[derive(Deserialize)]
-pub struct UpdateAgent {
-    agent: db::users::UpdateUserData,
+//pub fn get_agent(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<JsonValue> {
+//    db::users::find(&conn, auth.id).map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
+//}
+
+fn compute_address(name: &str, resource: Resource) -> String {
+    let mut sha = Sha512::new();
+    sha.input(name.as_bytes());
+
+    String::from(NAMESPACE) + &resource_to_byte(resource) + &sha.result_str()[..62].to_string()
 }
 
-#[put("/agent", format = "json", data = "<agent>")]
-pub fn put_agent(
-    agent: Json<UpdateAgent>,
-    auth: Auth,
-    conn: db::Conn,
-    state: State<AppState>,
-) -> Option<JsonValue> {
-    db::users::update(&conn, auth.id, &agent.agent)
-        .map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
-}
