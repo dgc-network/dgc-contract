@@ -25,6 +25,7 @@ pub enum CliError {
 }
 
 impl StdError for CliError {
+/*    
     fn description(&self) -> &str {
         match *self {
             CliError::UserError(ref s) => &s,
@@ -34,7 +35,7 @@ impl StdError for CliError {
             CliError::HyperError(ref err) => &err.to_string(),
         }
     }
-
+*/
     fn cause(&self) -> Option<&dyn StdError> {
         match *self {
             CliError::UserError(ref _s) => None,

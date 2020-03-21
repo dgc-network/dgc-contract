@@ -79,9 +79,10 @@ pub fn post_agents(
 
     let mut metadata = Vec::<KeyValueEntry>::new();
     for meta in metadata_as_strings.chars() {
-        let key_val: Vec<&str> = meta.to_string().split(",").collect();
+        let meta_as_string = meta.to_string();
+        let key_val: Vec<&str> = meta_as_string.split(",").collect();
         if key_val.len() != 2 {
-            "Metadata is formated incorrectly".to_string()
+            "Metadata is formated incorrectly".to_string();            
         }
         let key = match key_val.get(0) {
             Some(key) => key.to_string(),
