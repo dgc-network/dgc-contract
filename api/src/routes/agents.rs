@@ -23,8 +23,11 @@ use protos::state::{
     Agent, AgentList, 
     Organization, OrganizationList
 };
-use sawtooth_sdk::signing;
 use addresser::{resource_to_byte, Resource};
+use sawtooth_sdk::signing;
+use crypto::sha2::Sha512;
+
+const NAMESPACE: &'static str = "cad11d";
 
 #[derive(Deserialize)]
 pub struct NewAgent {
@@ -167,35 +170,6 @@ pub fn post_agents_login(
         .ok_or_else(|| Errors::new(&[("email or password", "is invalid")]))
 }
 
-#[get("/agent")]
-pub fn get_agent(
-    &mut self, 
-    public_key: &str
-) -> Result<Option<Agent>, ApplyError> {
-    let address = compute_address(public_key, Resource::AGENT);
-    let d = self.context.get_state_entry(&address)?;
-    match d {
-        Some(packed) => {
-            let agents: AgentList = match protobuf::parse_from_bytes(packed.as_slice()) {
-                Ok(agents) => agents,
-                Err(err) => {
-                    return Err(ApplyError::InternalError(format!(
-                        "Cannot deserialize record container: {:?}",
-                        err,
-                    )))
-                }
-            };
-
-            for agent in agents.get_agents() {
-                if agent.public_key == public_key {
-                    return Ok(Some(agent.clone()));
-                }
-            }
-            Ok(None)
-        }
-        None => Ok(None),
-    }
-}
 
 //pub fn get_agent(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<JsonValue> {
 //    db::users::find(&conn, auth.id).map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
@@ -208,3 +182,42 @@ fn compute_address(name: &str, resource: Resource) -> String {
     String::from(NAMESPACE) + &resource_to_byte(resource) + &sha.result_str()[..62].to_string()
 }
 
+pub struct SmartState<'a> {
+    context: &'a mut dyn TransactionContext,
+}
+
+impl<'a> SmartState<'a> {
+    pub fn new(context: &'a mut dyn TransactionContext) -> SmartState {
+        SmartState { context: context }
+    }
+    
+    #[get("/agent")]
+    pub fn get_agent(
+        &mut self, 
+        public_key: &str
+    ) -> Result<Option<Agent>, ApplyError> {
+        let address = compute_address(public_key, Resource::AGENT);
+        let d = self.context.get_state_entry(&address)?;
+        match d {
+            Some(packed) => {
+                let agents: AgentList = match protobuf::parse_from_bytes(packed.as_slice()) {
+                    Ok(agents) => agents,
+                    Err(err) => {
+                        return Err(ApplyError::InternalError(format!(
+                            "Cannot deserialize record container: {:?}",
+                            err,
+                        )))
+                    }
+                };
+    
+                for agent in agents.get_agents() {
+                    if agent.public_key == public_key {
+                        return Ok(Some(agent.clone()));
+                    }
+                }
+                Ok(None)
+            }
+            None => Ok(None),
+        }
+    }    
+}
