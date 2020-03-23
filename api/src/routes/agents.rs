@@ -26,7 +26,7 @@ use protos::state::{
 //use addresser::{resource_to_byte, Resource};
 use sawtooth_sdk::signing;
 use sawtooth_sdk::processor::handler::ApplyError;
-//use sawtooth_sdk::processor::handler::TransactionContext;
+use sawtooth_sdk::processor::handler::TransactionContext;
 
 //use crypto::digest::Digest;
 //use crypto::sha2::Sha512;
@@ -181,7 +181,9 @@ pub fn get_agent(
     public_key: String
 ) -> Result<JsonValue, Errors> {
 //) -> Result<Option<Agent>, ApplyError> {
-    handler.get_agent_by_public_key(&public_key);
+    let context = TransactionContext;
+    let state = handler::SmartState::new(context);
+    handler::get_agent_by_public_key(&public_key, &state);
     Ok(json!({ "getAgent": "done" }))
 }
 //pub fn get_agent(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<JsonValue> {

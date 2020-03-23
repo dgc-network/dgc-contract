@@ -278,13 +278,12 @@ impl TransactionHandler for SmartTransactionHandler {
 
 pub fn get_agent_by_public_key(
     public_key: &str,
-    //state: &mut SmartState,
-) -> Result<(), ApplyError> {
+    state: &SmartState,
+) -> Result<Option<Agent>, ApplyError> {
     if public_key.is_empty() {
         return Err(ApplyError::InvalidTransaction("Public key required".into()));
     }
 
-    let state: &mut SmartState;
     // make sure agent already exists
     let mut agent = match state.get_agent(public_key) {
         Ok(None) => {
