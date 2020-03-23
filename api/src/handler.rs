@@ -226,6 +226,8 @@ impl SmartTransactionHandler {
             namespaces: vec![NAMESPACE.to_string()],
         }
     }
+
+
 }
 
 impl TransactionHandler for SmartTransactionHandler {
@@ -272,6 +274,32 @@ impl TransactionHandler for SmartTransactionHandler {
             _ => Err(ApplyError::InvalidTransaction("Invalid action".into())),
         }
     }
+}
+
+fn get_agent_by_public_key(
+    public_key: &str,
+    state: &mut SmartState,
+) -> Result<(), ApplyError> {
+    if public_key.is_empty() {
+        return Err(ApplyError::InvalidTransaction("Public key required".into()));
+    }
+
+    // make sure agent already exists
+    let mut agent = match state.get_agent(public_key) {
+        Ok(None) => {
+            return Err(ApplyError::InvalidTransaction(format!(
+                "Agent does not exists: {}",
+                public_key,
+            )))
+        }
+        Ok(Some(agent)) => agent,
+        Err(err) => {
+            return Err(ApplyError::InvalidTransaction(format!(
+                "Failed to retrieve state: {}",
+                err,
+            )))
+        }
+    };
 }
 
 fn create_agent(
