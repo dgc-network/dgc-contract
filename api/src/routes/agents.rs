@@ -30,7 +30,7 @@ use sawtooth_sdk::processor::handler::ApplyError;
 
 //use crypto::digest::Digest;
 //use crypto::sha2::Sha512;
-use handler::SmartState;
+use handler;
 
 //const NAMESPACE: &'static str = "cad11d";
 
@@ -178,10 +178,10 @@ pub fn post_agents_login(
 
 #[get("/agent/<public_key>")]
 pub fn get_agent(
-    public_key: &str
+    public_key: String
 ) -> Result<JsonValue, Errors> {
 //) -> Result<Option<Agent>, ApplyError> {
-    SmartState.get_agent_by_public_key(public_key);
+    handler.get_agent_by_public_key(&public_key);
     Ok(json!({ "getAgent": "done" }))
 }
 //pub fn get_agent(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<JsonValue> {
