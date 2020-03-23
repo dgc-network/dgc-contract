@@ -177,7 +177,7 @@ pub fn post_agents_login(
 
 #[get("/agent")]
 pub fn get_agent(public_key: &str) -> Result<Option<Agent>, ApplyError> {
-    SmartState.get_agent(public_key)
+    SmartState::get_agent(public_key)
 }
 //pub fn get_agent(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<JsonValue> {
 //    db::users::find(&conn, auth.id).map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
