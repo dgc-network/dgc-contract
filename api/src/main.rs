@@ -34,6 +34,7 @@ mod payload;
 mod protos;
 mod submit;
 mod transaction;
+pub mod handler;
 
 mod db;
 mod models;
