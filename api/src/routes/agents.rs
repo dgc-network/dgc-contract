@@ -178,13 +178,15 @@ pub fn post_agents_login(
 
 #[get("/agent/<public_key>")]
 pub fn get_agent(
+    //&mut self, 
     public_key: String
 ) -> Result<JsonValue, Errors> {
 //) -> Result<Option<Agent>, ApplyError> {
     //let context = TransactionContext;
     //let state = handler::SmartState::new(context);
     //handler::get_agent_by_public_key(&public_key, &state);
-    handler::SmartState::get_agent(&self, &public_key);
+    //handler::SmartState::get_agent(&self, &public_key);
+    handler::get_agent_by_public_key(&public_key);
     Ok(json!({ "getAgent": "done" }))
 }
 //pub fn get_agent(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<JsonValue> {
