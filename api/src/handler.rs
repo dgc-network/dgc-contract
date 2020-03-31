@@ -307,9 +307,9 @@ pub fn get_agent_by_public_key(
 }
 */
 pub fn get_agent_by_public_key(
-    &mut self, 
+    //&mut self, 
     public_key: &str,
-    //state: &SmartState,
+    state: &SmartState,
 ) -> Result<Option<Agent>, ApplyError> {
     if public_key.is_empty() {
         return Err(ApplyError::InvalidTransaction("Public key required".into()));
@@ -340,7 +340,7 @@ pub fn get_agent_by_public_key(
     //    .get_agent(public_key)
     //    .map_err(|e| ApplyError::InternalError(format!("Failed to get agent: {:?}", e)))
 }
-*/
+
 
 fn create_agent(
     payload: &CreateAgentAction,
