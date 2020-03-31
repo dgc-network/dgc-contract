@@ -20,6 +20,7 @@ cfg_if! {
     }
 }
 
+use sawtooth_sdk::signing;
 use protos::payload::{CreateAgentAction, CreateOrganizationAction,
                       SmartPayload, SmartPayload_Action as Action, 
                       UpdateAgentAction, UpdateOrganizationAction};
@@ -275,8 +276,38 @@ impl TransactionHandler for SmartTransactionHandler {
         }
     }
 }
-
+/*
 pub fn get_agent_by_public_key(
+    &mut self, 
+    public_key: &str
+) -> Result<Option<Agent>, ApplyError> {
+    let address = compute_address(public_key, Resource::AGENT);
+    let d = self.context.get_state_entry(&address)?;
+    match d {
+        Some(packed) => {
+            let agents: AgentList = match protobuf::parse_from_bytes(packed.as_slice()) {
+                Ok(agents) => agents,
+                Err(err) => {
+                    return Err(ApplyError::InternalError(format!(
+                        "Cannot deserialize record container: {:?}",
+                        err,
+                    )))
+                }
+            };
+
+            for agent in agents.get_agents() {
+                if agent.public_key == public_key {
+                    return Ok(Some(agent.clone()));
+                }
+            }
+            Ok(None)
+        }
+        None => Ok(None),
+    }
+}
+*/
+pub fn get_agent_by_public_key(
+    &mut self, 
     public_key: &str,
     //state: &SmartState,
 ) -> Result<Option<Agent>, ApplyError> {
@@ -285,10 +316,10 @@ pub fn get_agent_by_public_key(
     }
 
     // make sure agent already exists
-    let context = signing::create_context("secp256k1")
-        .expect("Error creating the right context");
-    //let context = SmartTransactionHandler;
-    let state = SmartState.new(context);
+    //let context = signing::create_context("secp256k1")
+    //    .expect("Error creating the right context");
+    //let context: &mut dyn TransactionContext;
+    let state = SmartState::new(self.context);
     let mut agent = match state.get_agent(public_key) {
         Ok(None) => {
             return Err(ApplyError::InvalidTransaction(format!(
@@ -305,10 +336,11 @@ pub fn get_agent_by_public_key(
         }
     };
 
-    state
-        .get_agent(public_key)
-        .map_err(|e| ApplyError::InternalError(format!("Failed to get agent: {:?}", e)))
+    //state
+    //    .get_agent(public_key)
+    //    .map_err(|e| ApplyError::InternalError(format!("Failed to get agent: {:?}", e)))
 }
+*/
 
 fn create_agent(
     payload: &CreateAgentAction,
