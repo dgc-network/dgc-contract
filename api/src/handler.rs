@@ -219,43 +219,41 @@ impl<'a> SmartState<'a> {
     }
 }
 
-impl TransactionContext for SmartState {
-    pub fn get_agent_by_public_key(
-        //&mut self, 
-        public_key: &str,
-        //context: &mut dyn TransactionContext,
-        //state: &SmartState,
-    ) -> Result<Option<Agent>, ApplyError> {
-        if public_key.is_empty() {
-            return Err(ApplyError::InvalidTransaction("Public key required".into()));
-        }
-    
-        // make sure agent already exists
-        //let context = signing::create_context("secp256k1")
-        //    .expect("Error creating the right context");
-        //let context = &dyn TransactionContext;
-        let state = SmartState::new(self);
-        //let state = SmartState::new(self.context);
-        let mut agent = match state.get_agent(public_key) {
-            Ok(None) => {
-                return Err(ApplyError::InvalidTransaction(format!(
-                    "Agent does not exists: {}",
-                    public_key,
-                )))
-            }
-            Ok(Some(agent)) => agent,
-            Err(err) => {
-                return Err(ApplyError::InvalidTransaction(format!(
-                    "Failed to retrieve state: {}",
-                    err,
-                )))
-            }
-        };
-    
-        //state
-        //    .get_agent(public_key)
-        //    .map_err(|e| ApplyError::InternalError(format!("Failed to get agent: {:?}", e)))
+pub fn get_agent_by_public_key(
+    //&mut self, 
+    public_key: &str,
+    //context: &mut dyn TransactionContext,
+    //state: &SmartState,
+) -> Result<Option<Agent>, ApplyError> {
+    if public_key.is_empty() {
+        return Err(ApplyError::InvalidTransaction("Public key required".into()));
     }
+
+    // make sure agent already exists
+    //let context = signing::create_context("secp256k1")
+    //    .expect("Error creating the right context");
+    let context = SmartState::context;
+    let state = SmartState::new(context);
+    //let state = SmartState::new(self.context);
+    let mut agent = match state.get_agent(public_key) {
+        Ok(None) => {
+            return Err(ApplyError::InvalidTransaction(format!(
+                "Agent does not exists: {}",
+                public_key,
+            )))
+        }
+        Ok(Some(agent)) => agent,
+        Err(err) => {
+            return Err(ApplyError::InvalidTransaction(format!(
+                "Failed to retrieve state: {}",
+                err,
+            )))
+        }
+    };
+
+    //state
+    //    .get_agent(public_key)
+    //    .map_err(|e| ApplyError::InternalError(format!("Failed to get agent: {:?}", e)))
 }
 
 impl SmartTransactionHandler {
