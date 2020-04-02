@@ -186,7 +186,8 @@ pub fn get_agent(
     //let state = handler::SmartState::new(context);
     //handler::get_agent_by_public_key(&public_key, &state);
     //handler::SmartState::get_agent(&self, &public_key);
-    handler::get_agent_by_public_key(&public_key, context);
+    //handler::get_agent_by_public_key(&public_key, context);
+    handler::SmartState::get_agent_by_public_key(&public_key);
     Ok(json!({ "getAgent": "done" }))
 }
 //pub fn get_agent(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<JsonValue> {
