@@ -175,11 +175,11 @@ pub fn post_agents_login(
         .ok_or_else(|| Errors::new(&[("email or password", "is invalid")]))
 }
 
-pub struct GetAgent {
-    context: &mut dyn TransactionContext,
+pub struct GetAgent<'a> {
+    context: &'a mut dyn TransactionContext,
 }
 
-impl GetAgent {
+impl<'a> GetAgent<'a> {
     pub fn new(context: &'a mut dyn TransactionContext) -> GetAgent {
         GetAgent { context: context }
     }
