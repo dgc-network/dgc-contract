@@ -175,6 +175,52 @@ pub fn post_agents_login(
         .ok_or_else(|| Errors::new(&[("email or password", "is invalid")]))
 }
 
+pub struct GetAgent {
+    context: &mut dyn TransactionContext,
+}
+
+impl GetAgent {
+    pub fn new(context: &'a mut dyn TransactionContext) -> GetAgent {
+        GetAgent { context: context }
+    }
+
+    pub fn by_public_key(
+        &mut self, 
+        public_key: &str,
+        //context: &mut dyn TransactionContext,
+        //state: &SmartState,
+    ) -> Result<Option<Agent>, ApplyError> {
+        if public_key.is_empty() {
+            return Err(ApplyError::InvalidTransaction("Public key required".into()));
+        }
+    
+        // make sure agent already exists
+        //let context = signing::create_context("secp256k1")
+        //    .expect("Error creating the right context");
+        //let context = SmartState::self;
+        //let state = SmartState::new(context);
+        let state = SmartState::new(self.context);
+        let mut agent = match state.get_agent(public_key) {
+            Ok(None) => {
+                return Err(ApplyError::InvalidTransaction(format!(
+                    "Agent does not exists: {}",
+                    public_key,
+                )))
+            }
+            Ok(Some(agent)) => agent,
+            Err(err) => {
+                return Err(ApplyError::InvalidTransaction(format!(
+                    "Failed to retrieve state: {}",
+                    err,
+                )))
+            }
+        };
+    
+        //state
+        //    .get_agent(public_key)
+        //    .map_err(|e| ApplyError::InternalError(format!("Failed to get agent: {:?}", e)))
+    }
+}
 
 #[get("/agent/<public_key>")]
 pub fn get_agent(
@@ -182,12 +228,12 @@ pub fn get_agent(
     public_key: String
 ) -> Result<JsonValue, Errors> {
 //) -> Result<Option<Agent>, ApplyError> {
-    let context = TransactionContext::new();
+    //let context = TransactionContext::new();
     //let state = handler::SmartState::new(context);
     //handler::get_agent_by_public_key(&public_key, &state);
     //handler::SmartState::get_agent(&self, &public_key);
     //handler::get_agent_by_public_key(&public_key, context);
-    handler::SmartState::get_agent_by_public_key(&public_key);
+    GetAgent::by_public_key(&public_key);
     Ok(json!({ "getAgent": "done" }))
 }
 //pub fn get_agent(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<JsonValue> {

@@ -232,7 +232,7 @@ pub fn get_agent_by_public_key(
     // make sure agent already exists
     //let context = signing::create_context("secp256k1")
     //    .expect("Error creating the right context");
-    let context = SmartState::context;
+    let context = SmartState::self;
     let state = SmartState::new(context);
     //let state = SmartState::new(self.context);
     let mut agent = match state.get_agent(public_key) {
