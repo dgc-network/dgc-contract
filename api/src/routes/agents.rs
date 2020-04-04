@@ -31,6 +31,9 @@ use sawtooth_sdk::processor::handler::TransactionContext;
 //use crypto::digest::Digest;
 //use crypto::sha2::Sha512;
 use handler;
+use rocket::Outcome;
+use rocket::http::Status;
+use rocket::request::{self, Request, FromRequest};
 
 //const NAMESPACE: &'static str = "cad11d";
 
@@ -215,10 +218,34 @@ impl<'a> GetAgent<'a> {
                 )))
             }
         };
-*/    
+    
         //state
         //    .get_agent(public_key)
         //    .map_err(|e| ApplyError::InternalError(format!("Failed to get agent: {:?}", e)))
+    }
+*/    
+}
+
+#[derive(Deserialize)]
+pub struct AgentContext {
+    context: &'a mut dyn TransactionContext,
+}
+
+impl<'a, 'r> FromRequest<'a, 'r> for AgentContext {
+    //type Error = ApiKeyError;
+    pub fn new(context: &'a mut dyn TransactionContext) -> AgentContext {
+        AgentContext { context: context }
+    }
+
+    fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
+        AgentContext { context: context }
+        //let keys: Vec<_> = request.headers().get("x-api-key").collect();
+        //match keys.len() {
+        //    0 => Outcome::Failure((Status::BadRequest, ApiKeyError::Missing)),
+        //    1 if is_valid(keys[0]) => Outcome::Success(ApiKey(keys[0].to_string())),
+        //    1 => Outcome::Failure((Status::BadRequest, ApiKeyError::Invalid)),
+        //    _ => Outcome::Failure((Status::BadRequest, ApiKeyError::BadCount)),
+        }
     }
 }
 
@@ -226,7 +253,7 @@ impl<'a> GetAgent<'a> {
 pub fn get_agent(
     //&mut self, 
     public_key: String,
-    context: &mut TransactionContext,
+    context: AgentContext,
 ) -> Result<JsonValue, Errors> {
 //) -> Result<Option<Agent>, ApplyError> {
     //let context = TransactionContext::new();
@@ -238,19 +265,21 @@ pub fn get_agent(
 
     //let state = handler::SmartState::new(self.context);
     let state = handler::SmartState::new(context);
-    let mut agent = match state.get_agent(public_key) {
+    let mut agent = match state.get_agent(&public_key) {
         Ok(None) => {
-            return Err(ApplyError::InvalidTransaction(format!(
-                "Agent does not exists: {}",
-                public_key,
-            )))
+            //return Err(ApplyError::InvalidTransaction(format!(
+            //    "Agent does not exists: {}",
+            //    public_key,
+            //)))
+            return Err(json!({ "Agent does not exists": public_key }))
         }
         Ok(Some(agent)) => agent,
         Err(err) => {
-            return Err(ApplyError::InvalidTransaction(format!(
-                "Failed to retrieve state: {}",
-                err,
-            )))
+            //return Err(ApplyError::InvalidTransaction(format!(
+            //    "Failed to retrieve state: {}",
+            //    err,
+            //)))
+            return Err(json!({ "Failed to retrieve state": err }))
         }
     };
 
