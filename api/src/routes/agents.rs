@@ -225,35 +225,37 @@ impl<'a> GetAgent<'a> {
     }
 */    
 }
-
+/*
 #[derive(Deserialize)]
 pub struct AgentContext {
-    context: &'a mut dyn TransactionContext,
+    context: &mut dyn TransactionContext,
 }
 
 impl<'a, 'r> FromRequest<'a, 'r> for AgentContext {
-    //type Error = ApiKeyError;
-    pub fn new(context: &'a mut dyn TransactionContext) -> AgentContext {
-        AgentContext { context: context }
-    }
+    type Error = ();
+    //pub fn new(context: &'a mut dyn TransactionContext) -> AgentContext {
+    //    AgentContext { context: context }
+    //}
 
     fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
         AgentContext { context: context }
+        //AgentContext { context: Self }
         //let keys: Vec<_> = request.headers().get("x-api-key").collect();
         //match keys.len() {
         //    0 => Outcome::Failure((Status::BadRequest, ApiKeyError::Missing)),
         //    1 if is_valid(keys[0]) => Outcome::Success(ApiKey(keys[0].to_string())),
         //    1 => Outcome::Failure((Status::BadRequest, ApiKeyError::Invalid)),
         //    _ => Outcome::Failure((Status::BadRequest, ApiKeyError::BadCount)),
-        }
+        //}
     }
 }
-
+*/
 #[get("/agent/<public_key>")]
 pub fn get_agent(
     //&mut self, 
     public_key: String,
-    context: AgentContext,
+    context: &mut dyn TransactionContext,
+    //context: AgentContext,
 ) -> Result<JsonValue, Errors> {
 //) -> Result<Option<Agent>, ApplyError> {
     //let context = TransactionContext::new();
