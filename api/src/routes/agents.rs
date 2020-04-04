@@ -183,7 +183,7 @@ impl<'a> GetAgent<'a> {
     pub fn new(context: &'a mut dyn TransactionContext) -> GetAgent {
         GetAgent { context: context }
     }
-
+/*
     pub fn by_public_key(
         &mut self, 
         public_key: &str,
@@ -199,7 +199,7 @@ impl<'a> GetAgent<'a> {
         //    .expect("Error creating the right context");
         //let context = SmartState::self;
         //let state = SmartState::new(context);
-        let state = SmartState::new(self.context);
+        let state = handler::SmartState::new(self.context);
         let mut agent = match state.get_agent(public_key) {
             Ok(None) => {
                 return Err(ApplyError::InvalidTransaction(format!(
@@ -215,7 +215,7 @@ impl<'a> GetAgent<'a> {
                 )))
             }
         };
-    
+*/    
         //state
         //    .get_agent(public_key)
         //    .map_err(|e| ApplyError::InternalError(format!("Failed to get agent: {:?}", e)))
@@ -225,7 +225,8 @@ impl<'a> GetAgent<'a> {
 #[get("/agent/<public_key>")]
 pub fn get_agent(
     //&mut self, 
-    public_key: String
+    public_key: String,
+    context: &mut TransactionContext,
 ) -> Result<JsonValue, Errors> {
 //) -> Result<Option<Agent>, ApplyError> {
     //let context = TransactionContext::new();
@@ -233,7 +234,26 @@ pub fn get_agent(
     //handler::get_agent_by_public_key(&public_key, &state);
     //handler::SmartState::get_agent(&self, &public_key);
     //handler::get_agent_by_public_key(&public_key, context);
-    GetAgent::by_public_key(&public_key);
+    //GetAgent::by_public_key(&public_key);
+
+    //let state = handler::SmartState::new(self.context);
+    let state = handler::SmartState::new(context);
+    let mut agent = match state.get_agent(public_key) {
+        Ok(None) => {
+            return Err(ApplyError::InvalidTransaction(format!(
+                "Agent does not exists: {}",
+                public_key,
+            )))
+        }
+        Ok(Some(agent)) => agent,
+        Err(err) => {
+            return Err(ApplyError::InvalidTransaction(format!(
+                "Failed to retrieve state: {}",
+                err,
+            )))
+        }
+    };
+
     Ok(json!({ "getAgent": "done" }))
 }
 //pub fn get_agent(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<JsonValue> {

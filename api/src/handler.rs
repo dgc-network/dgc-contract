@@ -218,7 +218,7 @@ impl<'a> SmartState<'a> {
         Ok(())
     }
 }
-
+/*
 pub fn get_agent_by_public_key(
     //&mut self, 
     public_key: &str,
@@ -255,7 +255,7 @@ pub fn get_agent_by_public_key(
     //    .get_agent(public_key)
     //    .map_err(|e| ApplyError::InternalError(format!("Failed to get agent: {:?}", e)))
 }
-
+*/
 impl SmartTransactionHandler {
     pub fn new() -> SmartTransactionHandler {
         SmartTransactionHandler {
