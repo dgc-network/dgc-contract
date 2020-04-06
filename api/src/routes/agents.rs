@@ -133,14 +133,14 @@ pub fn post_agents(
 
     let addresses = protobuf::RepeatedField::from_vec(vec![
         compute_agent_address(org_id),
-        compute_agent_address(agent_public_key),
+        compute_agent_address(public_key),
         compute_agent_address(public_key),
     ]);
 
-    let txn = transaction::create_transaction(addresses, &payload, &signer, &public_key.as_hex())?;
+    let txn = create_transaction(addresses, &payload, &signer, &public_key.as_hex())?;
 
-    let batch = transaction::create_batch(txn, &signer, &public_key.as_hex())?;
-    let batch_list = transaction::create_batch_list_from_one(batch);
+    let batch = create_batch(txn, &signer, &public_key.as_hex())?;
+    let batch_list = create_batch_list_from_one(batch);
 
     let url = "http://dgc-api:9001";
     submit_batch_list(

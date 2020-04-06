@@ -100,7 +100,7 @@ fn compute_org_address(id: &str) -> String {
 ///
 /// If a signing error occurs, a `CliError::SigningError` is returned.
 pub fn create_transaction(
-    addresses: &protobuf::RepeatedField::from_vec,
+    addresses: protobuf::RepeatedField,
     payload: &payload::SmartPayload,
     signer: &Signer,
     public_key: &String,
