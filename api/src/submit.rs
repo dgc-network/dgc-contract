@@ -35,20 +35,20 @@ use protos::payload::SmartPayload;
 use transaction;
 
 pub fn do_create(
-    url: &str,
+    //url: &str,
     private_key: &dyn PrivateKey,
     payload: &SmartPayload,
-    output: &str
+    //output: &str
 ) -> Result<(), CliError> {
 //) -> Result<(), Errors> {
 
-    if !output.is_empty() {
-        let mut buffer = File::create(output)?;
-        let payload_bytes = payload.write_to_bytes()?;
-        buffer.write_all(&payload_bytes).map_err(|err| CliError::IoError(err))?;
+    //if !output.is_empty() {
+    //    let mut buffer = File::create(output)?;
+    //    let payload_bytes = payload.write_to_bytes()?;
+    //    buffer.write_all(&payload_bytes).map_err(|err| CliError::IoError(err))?;
         //buffer.write_all(&payload_bytes).map_err(|err| Errors::new(&[("IoError:", format!("{}", err))]))?;
-        return Ok(())
-    }
+    //    return Ok(())
+    //}
 
     let context = signing::create_context("secp256k1")?;
     let public_key = context.get_public_key(private_key)?;
@@ -61,6 +61,7 @@ pub fn do_create(
     let batch = transaction::create_batch(txn, &signer, &public_key.as_hex())?;
     let batch_list = transaction::create_batch_list_from_one(batch);
 
+    let url = "http://dgc-api:9001";
     submit_batch_list(
         &format!("{}/batches?wait=120", url),
         &batch_list)

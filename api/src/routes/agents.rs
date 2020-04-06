@@ -25,12 +25,17 @@ use protos::state::{
 };
 //use addresser::{resource_to_byte, Resource};
 use sawtooth_sdk::signing;
+use sawtooth_sdk::signing::secp256k1::Secp256k1PrivateKey;
 use sawtooth_sdk::processor::handler::ApplyError;
 use sawtooth_sdk::processor::handler::TransactionContext;
 
 //use crypto::digest::Digest;
 //use crypto::sha2::Sha512;
-use handler;
+//use handler;
+use transaction::{create_transaction, create_batch, create_batch_list_from_one};
+use submit::submit_batch_list;
+use addresser::{compute_agent_address};
+
 use rocket::Outcome;
 use rocket::http::Status;
 use rocket::request::{self, Request, FromRequest};
@@ -74,12 +79,12 @@ pub fn post_agents(
 
     extractor.check()?;
 
-    let url = "http://dgc-api:9001";
+    //let url = "http://dgc-api:9001";
     let context = signing::create_context("secp256k1")
         .expect("Error creating the right context");
     //let private_key = context.new_random_private_key()
     //    .expect("Error generating a new Private Key");
-    let private_key = signing::secp256k1::Secp256k1PrivateKey::from_hex(&private_key_hex_string)
+    let private_key = Secp256k1PrivateKey::from_hex(&private_key_hex_string)
         .expect("Error retrieving Private Key");
     let crypto_factory = signing::CryptoFactory::new(context.as_ref());
     //let signer = crypto_factory.new_signer(&private_key.as_ref());
@@ -87,7 +92,12 @@ pub fn post_agents(
     let public_key = signer.get_public_key()
         .expect("Error retrieving Public Key")
         .as_hex();
-
+/*
+    let context = signing::create_context("secp256k1")?;
+    let public_key = context.get_public_key(private_key)?;
+    let factory = signing::CryptoFactory::new(&*context);
+    let signer = factory.new_signer(private_key);
+*/    
     let mut roles = Vec::<String>::new();
     for role in roles_as_strings.chars() {
         let entry: String = role.to_string().split(",").collect();
@@ -116,8 +126,27 @@ pub fn post_agents(
     }
 
     let payload = create_agent_payload(&org_id, &public_key, roles, metadata);    
-    let output = "";
-    do_create(&url, &private_key, &payload, &output);
+    //let output = "";
+    //do_create(&url, &private_key, &payload, &output);
+
+    ////do_create(&private_key, &payload);
+
+    let addresses = protobuf::RepeatedField::from_vec(vec![
+        compute_agent_address(org_id),
+        compute_agent_address(agent_public_key),
+        compute_agent_address(public_key),
+    ])
+
+    let txn = transaction::create_transaction(addresses, &payload, &signer, &public_key.as_hex())?;
+
+    let batch = transaction::create_batch(txn, &signer, &public_key.as_hex())?;
+    let batch_list = transaction::create_batch_list_from_one(batch);
+
+    let url = "http://dgc-api:9001";
+    submit_batch_list(
+        &format!("{}/batches?wait=120", url),
+        &batch_list)
+
     Ok(json!({ "createAgent": "done" }))
 
 /*
@@ -178,53 +207,6 @@ pub fn post_agents_login(
         .ok_or_else(|| Errors::new(&[("email or password", "is invalid")]))
 }
 
-pub struct GetAgent<'a> {
-    context: &'a mut dyn TransactionContext,
-}
-
-impl<'a> GetAgent<'a> {
-    pub fn new(context: &'a mut dyn TransactionContext) -> GetAgent {
-        GetAgent { context: context }
-    }
-/*
-    pub fn by_public_key(
-        &mut self, 
-        public_key: &str,
-        //context: &mut dyn TransactionContext,
-        //state: &SmartState,
-    ) -> Result<Option<Agent>, ApplyError> {
-        if public_key.is_empty() {
-            return Err(ApplyError::InvalidTransaction("Public key required".into()));
-        }
-    
-        // make sure agent already exists
-        //let context = signing::create_context("secp256k1")
-        //    .expect("Error creating the right context");
-        //let context = SmartState::self;
-        //let state = SmartState::new(context);
-        let state = handler::SmartState::new(self.context);
-        let mut agent = match state.get_agent(public_key) {
-            Ok(None) => {
-                return Err(ApplyError::InvalidTransaction(format!(
-                    "Agent does not exists: {}",
-                    public_key,
-                )))
-            }
-            Ok(Some(agent)) => agent,
-            Err(err) => {
-                return Err(ApplyError::InvalidTransaction(format!(
-                    "Failed to retrieve state: {}",
-                    err,
-                )))
-            }
-        };
-    
-        //state
-        //    .get_agent(public_key)
-        //    .map_err(|e| ApplyError::InternalError(format!("Failed to get agent: {:?}", e)))
-    }
-*/    
-}
 /*
 #[derive(Deserialize)]
 pub struct AgentContext {
@@ -250,6 +232,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for AgentContext {
     }
 }
 */
+/*
 #[get("/agent/<public_key>")]
 pub fn get_agent(
     //&mut self, 
@@ -291,3 +274,4 @@ pub fn get_agent(
 //    db::users::find(&conn, auth.id).map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
 //}
 
+*/

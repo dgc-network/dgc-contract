@@ -31,14 +31,14 @@ const DGC_FAMILY_NAME: &'static str = "dgc";
 /// The dgc transaction family version (0.1)
 const DGC_FAMILY_VERSION: &'static str = "0.1";
 
-/// The dgc namespace prefix for global state (cad11d)
-const DGC_NAMESPACE: &'static str = "cad11d";
-
 /// Creates a nonce appropriate for a TransactionHeader
 fn create_nonce() -> String {
     let elapsed = Instant::now().elapsed();
     format!("{}{}", elapsed.as_secs(), elapsed.subsec_nanos())
 }
+/*
+/// The dgc namespace prefix for global state (cad11d)
+const DGC_NAMESPACE: &'static str = "cad11d";
 
 /// Returns a hex string representation of the supplied bytes
 ///
@@ -83,7 +83,7 @@ fn compute_org_address(id: &str) -> String {
     String::from(DGC_NAMESPACE) + &resource_to_byte(Resource::ORG)
         + &bytes_to_hex_str(hash)[..62]
 }
-
+*/
 /// Returns a Transaction for the given Payload and Signer
 ///
 /// # Arguments
@@ -100,6 +100,7 @@ fn compute_org_address(id: &str) -> String {
 ///
 /// If a signing error occurs, a `CliError::SigningError` is returned.
 pub fn create_transaction(
+    addresses: &protobuf::RepeatedField,
     payload: &payload::SmartPayload,
     signer: &Signer,
     public_key: &String,
@@ -113,7 +114,7 @@ pub fn create_transaction(
     txn_header.set_nonce(create_nonce());
     txn_header.set_signer_public_key(public_key.clone());
     txn_header.set_batcher_public_key(public_key.clone());
-
+/*
     let addresses = match payload.get_action() {
         Action::CREATE_AGENT => {
             let org_id = payload.get_create_agent().get_org_id();
@@ -149,7 +150,7 @@ pub fn create_transaction(
         }
         _ => protobuf::RepeatedField::from_vec(vec![String::from(DGC_NAMESPACE)]),
     };
-
+*/
     txn_header.set_inputs(addresses.clone());
     txn_header.set_outputs(addresses.clone());
 
