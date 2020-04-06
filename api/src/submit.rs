@@ -67,7 +67,7 @@ pub fn do_create(
         &batch_list)
 }
 
-fn submit_batch_list(
+pub fn submit_batch_list(
     url: &str, 
     batch_list: &BatchList
 ) -> Result<(), CliError> {

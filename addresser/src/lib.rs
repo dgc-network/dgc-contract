@@ -59,7 +59,7 @@ fn bytes_to_hex_str(b: &[u8]) -> String {
 /// # Arguments
 ///
 /// * `name` - the agent's name
-fn compute_agent_address(name: &str) -> String {
+pub fn compute_agent_address(name: &str) -> String {
     let hash: &mut [u8] = &mut [0; 64];
 
     let mut sha = Sha512::new();

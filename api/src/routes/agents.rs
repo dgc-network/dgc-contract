@@ -135,7 +135,7 @@ pub fn post_agents(
         compute_agent_address(org_id),
         compute_agent_address(agent_public_key),
         compute_agent_address(public_key),
-    ])
+    ]);
 
     let txn = transaction::create_transaction(addresses, &payload, &signer, &public_key.as_hex())?;
 
@@ -145,7 +145,7 @@ pub fn post_agents(
     let url = "http://dgc-api:9001";
     submit_batch_list(
         &format!("{}/batches?wait=120", url),
-        &batch_list)
+        &batch_list);
 
     Ok(json!({ "createAgent": "done" }))
 
@@ -232,12 +232,12 @@ impl<'a, 'r> FromRequest<'a, 'r> for AgentContext {
     }
 }
 */
-/*
+
 #[get("/agent/<public_key>")]
 pub fn get_agent(
     //&mut self, 
     public_key: String,
-    context: &mut dyn TransactionContext,
+    //context: &mut dyn TransactionContext,
     //context: AgentContext,
 ) -> Result<JsonValue, Errors> {
 //) -> Result<Option<Agent>, ApplyError> {
@@ -247,7 +247,7 @@ pub fn get_agent(
     //handler::SmartState::get_agent(&self, &public_key);
     //handler::get_agent_by_public_key(&public_key, context);
     //GetAgent::by_public_key(&public_key);
-
+/*
     //let state = handler::SmartState::new(self.context);
     let state = handler::SmartState::new(context);
     let mut agent = match state.get_agent(&public_key) {
@@ -267,11 +267,10 @@ pub fn get_agent(
             return Err(json!({ "Failed to retrieve state": err }))
         }
     };
-
+*/
     Ok(json!({ "getAgent": "done" }))
 }
 //pub fn get_agent(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<JsonValue> {
 //    db::users::find(&conn, auth.id).map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
 //}
 
-*/

@@ -36,7 +36,7 @@ fn create_nonce() -> String {
     let elapsed = Instant::now().elapsed();
     format!("{}{}", elapsed.as_secs(), elapsed.subsec_nanos())
 }
-/*
+
 /// The dgc namespace prefix for global state (cad11d)
 const DGC_NAMESPACE: &'static str = "cad11d";
 
@@ -83,7 +83,7 @@ fn compute_org_address(id: &str) -> String {
     String::from(DGC_NAMESPACE) + &resource_to_byte(Resource::ORG)
         + &bytes_to_hex_str(hash)[..62]
 }
-*/
+
 /// Returns a Transaction for the given Payload and Signer
 ///
 /// # Arguments
@@ -100,7 +100,7 @@ fn compute_org_address(id: &str) -> String {
 ///
 /// If a signing error occurs, a `CliError::SigningError` is returned.
 pub fn create_transaction(
-    addresses: &protobuf::RepeatedField,
+    addresses: &protobuf::RepeatedField::from_vec,
     payload: &payload::SmartPayload,
     signer: &Signer,
     public_key: &String,
