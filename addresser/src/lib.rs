@@ -1,6 +1,9 @@
 // Copyright (c) The dgc.network
 // SPDX-License-Identifier: Apache-2.0
 
+use crypto::digest::Digest;
+use crypto::sha2::Sha512;
+
 /// Represents part of address that designates resource type
 #[derive(Debug)]
 pub enum Resource {
