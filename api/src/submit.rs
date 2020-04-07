@@ -17,8 +17,8 @@ use sawtooth_sdk::messages::batch::BatchList;
 //use errors::Errors;
 use protobuf::Message;
 
-use std::fs::File;
-use std::io::prelude::*;
+//use std::fs::File;
+//use std::io::prelude::*;
 
 use sawtooth_sdk::signing;
 use sawtooth_sdk::signing::PrivateKey;
@@ -33,7 +33,7 @@ use protos::payload::SmartPayload;
 //use protobuf::Message;
 
 use transaction;
-
+/*
 pub fn do_create(
     //url: &str,
     private_key: &dyn PrivateKey,
@@ -66,7 +66,7 @@ pub fn do_create(
         &format!("{}/batches?wait=120", url),
         &batch_list)
 }
-
+*/
 pub fn submit_batch_list(
     url: &str, 
     batch_list: &BatchList

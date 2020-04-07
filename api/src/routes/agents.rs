@@ -10,7 +10,7 @@ use rocket::State;
 use rocket_contrib::json::{Json, JsonValue};
 use serde::Deserialize;
 use validator::Validate;
-use submit::do_create;
+//use submit::do_create;
 use payload::{
     create_agent_payload
 //    create_org_payload,
@@ -20,14 +20,14 @@ use payload::{
 //use protos::state::KeyValueEntry;
 use protos::state::{
     KeyValueEntry,
-    Agent, AgentList, 
-    Organization, OrganizationList
+//    Agent, AgentList, 
+//    Organization, OrganizationList
 };
 //use addresser::{resource_to_byte, Resource};
 use sawtooth_sdk::signing;
 use sawtooth_sdk::signing::secp256k1::Secp256k1PrivateKey;
-use sawtooth_sdk::processor::handler::ApplyError;
-use sawtooth_sdk::processor::handler::TransactionContext;
+//use sawtooth_sdk::processor::handler::ApplyError;
+//use sawtooth_sdk::processor::handler::TransactionContext;
 
 //use crypto::digest::Digest;
 //use crypto::sha2::Sha512;
@@ -36,9 +36,9 @@ use transaction::{create_transaction, create_batch, create_batch_list_from_one};
 use submit::submit_batch_list;
 use addresser::{compute_agent_address};
 
-use rocket::Outcome;
-use rocket::http::Status;
-use rocket::request::{self, Request, FromRequest};
+//use rocket::Outcome;
+//use rocket::http::Status;
+//use rocket::request::{self, Request, FromRequest};
 
 //const NAMESPACE: &'static str = "cad11d";
 
@@ -132,14 +132,14 @@ pub fn post_agents(
     ////do_create(&private_key, &payload);
 
     let addresses = protobuf::RepeatedField::from_vec(vec![
-        compute_agent_address(org_id),
-        compute_agent_address(public_key),
-        compute_agent_address(public_key),
+        compute_agent_address(&org_id),
+        compute_agent_address(&public_key),
+        compute_agent_address(&public_key),
     ]);
 
-    let txn = create_transaction(addresses, &payload, &signer, &public_key.as_hex())?;
+    let txn = create_transaction(addresses, &payload, &signer, &public_key);
 
-    let batch = create_batch(txn, &signer, &public_key.as_hex())?;
+    let batch = create_batch(txn, &signer, &public_key);
     let batch_list = create_batch_list_from_one(batch);
 
     let url = "http://dgc-api:9001";

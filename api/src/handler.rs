@@ -20,7 +20,7 @@ cfg_if! {
     }
 }
 
-use sawtooth_sdk::signing;
+//use sawtooth_sdk::signing;
 use protos::payload::{CreateAgentAction, CreateOrganizationAction,
                       SmartPayload, SmartPayload_Action as Action, 
                       UpdateAgentAction, UpdateOrganizationAction};

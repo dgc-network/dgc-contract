@@ -23,7 +23,7 @@ use addresser::{resource_to_byte, Resource};
 //use errors::Errors;
 use error::CliError;
 use protos::payload;
-use protos::payload::SmartPayload_Action as Action;
+//use protos::payload::SmartPayload_Action as Action;
 
 /// The dgc transaction family name (dgc)
 const DGC_FAMILY_NAME: &'static str = "dgc";

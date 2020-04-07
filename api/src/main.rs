@@ -8,7 +8,7 @@
 #[macro_use] extern crate diesel;
 #[macro_use] extern crate validator_derive;
 #[macro_use] extern crate cfg_if;
-#[macro_use] extern crate clap;
+//#[macro_use] extern crate clap;
 #[macro_use] extern crate log;
 
 extern crate rocket_cors;
