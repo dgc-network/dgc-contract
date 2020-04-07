@@ -67,7 +67,7 @@ struct NewAgentData {
 pub fn post_agents(
     new_agent: Json<NewAgent>,
     //conn: db::Conn,
-    state: State<AppState>,
+    //state: State<AppState>,
 ) -> Result<JsonValue, Errors> {
     let new_agent = new_agent.into_inner().agent;
 
