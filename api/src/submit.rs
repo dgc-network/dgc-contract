@@ -20,19 +20,19 @@ use protobuf::Message;
 //use std::fs::File;
 //use std::io::prelude::*;
 
-use sawtooth_sdk::signing;
-use sawtooth_sdk::signing::PrivateKey;
+//use sawtooth_sdk::signing;
+//use sawtooth_sdk::signing::PrivateKey;
 
 use error::CliError;
 //use key::load_signing_key;
 //use submit_batch_list::submit_batch_list;
 
-use protos::payload::SmartPayload;
+//use protos::payload::SmartPayload;
 //use protos::state::KeyValueEntry;
 
 //use protobuf::Message;
 
-use transaction;
+//use transaction;
 /*
 pub fn do_create(
     //url: &str,
