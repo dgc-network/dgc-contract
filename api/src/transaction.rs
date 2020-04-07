@@ -20,6 +20,18 @@ use sawtooth_sdk::signing::Signer;
 
 use addresser::{resource_to_byte, Resource};
 
+use hyper;
+use hyper::Method;
+use hyper::client::{Client, Request};
+use hyper::header::{ContentLength, ContentType};
+use std::str;
+use futures::{future, Future};
+use futures::Stream;
+use tokio_core;
+
+//use sawtooth_sdk::messages::batch::BatchList;
+
+
 //use errors::Errors;
 use error::CliError;
 use protos::payload;
@@ -219,4 +231,64 @@ pub fn create_batch_list_from_one(batch: Batch) -> BatchList {
     let mut batch_list = BatchList::new();
     batch_list.set_batches(protobuf::RepeatedField::from_vec(vec![batch]));
     return batch_list;
+}
+
+pub fn submit_batch_list(
+    url: &str, 
+    batch_list: &BatchList
+) -> Result<(), CliError> {
+//) -> Result<(), Errors> {
+    let hyper_uri = match url.parse::<hyper::Uri>() {
+        Ok(uri) => uri,
+        //Err(e) => Errors::new(&[("Invalid URL:", format!(
+        //    "{}: {}", e, url
+        //))]),
+        Err(e) => return Err(CliError::UserError(format!("Invalid URL: {}: {}", e, url))),
+    };
+
+    match hyper_uri.scheme() {
+        Some(scheme) => {
+            if scheme != "http" {
+                //Errors::new(&[("Unsupported scheme", format!(
+                //    "({}) in URL: {}", scheme, url
+                //))]);
+                return Err(CliError::UserError(format!(
+                    "Unsupported scheme ({}) in URL: {}",
+                    scheme, url
+                )));
+            }
+        }
+        None => {
+            //Errors::new(&[("No scheme", format!("in URL: {}", url))]);
+            return Err(CliError::UserError(format!("No scheme in URL: {}", url)));
+        }
+    }
+
+    let mut core = tokio_core::reactor::Core::new()?;
+    let handle = core.handle();
+    let client = Client::configure().build(&handle);
+
+    let bytes = batch_list.write_to_bytes()?;
+
+    let mut req = Request::new(Method::Post, hyper_uri);
+    req.headers_mut().set(ContentType::octet_stream());
+    req.headers_mut().set(ContentLength(bytes.len() as u64));
+    req.set_body(bytes);
+
+    let work = client.request(req).and_then(|res| {
+        res.body()
+            .fold(Vec::new(), |mut v, chunk| {
+                v.extend(&chunk[..]);
+                future::ok::<_, hyper::Error>(v)
+            })
+            .and_then(move |chunks| {
+                let body = String::from_utf8(chunks).unwrap();
+                future::ok(body)
+            })
+    });
+
+    let body = core.run(work)?;
+    println!("Response Body:\n{}", body);
+
+    Ok(())
 }

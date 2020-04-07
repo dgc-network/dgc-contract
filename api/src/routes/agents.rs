@@ -32,8 +32,12 @@ use sawtooth_sdk::signing::secp256k1::Secp256k1PrivateKey;
 //use crypto::digest::Digest;
 //use crypto::sha2::Sha512;
 //use handler;
-use transaction::{create_transaction, create_batch, create_batch_list_from_one};
-use submit::submit_batch_list;
+use transaction::{
+    create_transaction, 
+    create_batch, 
+    create_batch_list_from_one, 
+    submit_batch_list};
+//use submit::submit_batch_list;
 use addresser::{compute_agent_address};
 
 //use rocket::Outcome;
