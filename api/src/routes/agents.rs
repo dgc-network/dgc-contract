@@ -137,9 +137,10 @@ pub fn post_agents(
         compute_agent_address(&public_key),
     ]);
 
-    let txn = create_transaction(addresses, &payload, &signer, &public_key);
-
-    let batch = create_batch(txn, &signer, &public_key);
+    let txn = create_transaction(addresses, &payload, &signer, &public_key)
+        .expect("Error create transaction");
+    let batch = create_batch(txn, &signer, &public_key)
+        .expect("Error create batch");
     let batch_list = create_batch_list_from_one(batch);
 
     let url = "http://dgc-api:9001";

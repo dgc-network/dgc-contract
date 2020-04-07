@@ -37,9 +37,6 @@ fn create_nonce() -> String {
     format!("{}{}", elapsed.as_secs(), elapsed.subsec_nanos())
 }
 
-/// The dgc namespace prefix for global state (cad11d)
-const DGC_NAMESPACE: &'static str = "cad11d";
-
 /// Returns a hex string representation of the supplied bytes
 ///
 /// # Arguments
@@ -51,6 +48,9 @@ fn bytes_to_hex_str(b: &[u8]) -> String {
         .collect::<Vec<_>>()
         .join("")
 }
+/*
+/// The dgc namespace prefix for global state (cad11d)
+const DGC_NAMESPACE: &'static str = "cad11d";
 
 /// Returns a state address for a given agent name
 ///
@@ -83,7 +83,7 @@ fn compute_org_address(id: &str) -> String {
     String::from(DGC_NAMESPACE) + &resource_to_byte(Resource::ORG)
         + &bytes_to_hex_str(hash)[..62]
 }
-
+*/
 /// Returns a Transaction for the given Payload and Signer
 ///
 /// # Arguments
