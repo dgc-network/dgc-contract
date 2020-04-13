@@ -36,6 +36,15 @@ pub enum ResourceError {
     UnknownResource(String)
 }
 
+////from handler
+const NAMESPACE: &'static str = "cad11d";
+
+fn compute_address(name: &str, resource: Resource) -> String {
+    let mut sha = Sha512::new();
+    sha.input(name.as_bytes());
+
+    String::from(NAMESPACE) + &resource_to_byte(resource) + &sha.result_str()[..62].to_string()
+}
 
 ////from transaction.rs
 ////

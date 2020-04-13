@@ -38,7 +38,7 @@ use transaction::{
     create_batch_list_from_one, 
     submit_batch_list};
 //use submit::submit_batch_list;
-use addresser::{compute_agent_address};
+use addresser::{compute_agent_address, compute_address};
 use addresser::{resource_to_byte, Resource};
 
 use hyper::Client;
@@ -94,6 +94,7 @@ pub fn post_agents(
         .expect("Error generating a new Private Key");
     let factory = signing::CryptoFactory::new(context.as_ref());
     let signer = factory.new_signer(&private_key);
+        .expect("Error generating a new signer");
     let public_key = signer.get_public_key()
         .expect("Error retrieving Public Key")
         .as_hex();
@@ -305,15 +306,6 @@ pub fn post_agents_login(
         .ok_or_else(|| Errors::new(&[("email or password", "is invalid")]))
 }
 
-const NAMESPACE: &'static str = "cad11d";
-
-fn compute_address(name: &str, resource: Resource) -> String {
-    let mut sha = Sha512::new();
-    sha.input(name.as_bytes());
-
-    String::from(NAMESPACE) + &resource_to_byte(resource) + &sha.result_str()[..62].to_string()
-}
-
 #[get("/agent/<public_key>")]
 pub fn get_agent(
     public_key: String,
@@ -326,7 +318,7 @@ pub fn get_agent(
     Fetch a particular leaf from the current state
 */
 
-    let address = compute_address(public_key, Resource::AGENT);
+    let address = compute_address(&public_key, Resource::AGENT);
 
     let url = "http://dgc-api:9001" + "/state/" + address;
 
@@ -353,7 +345,7 @@ pub fn get_agent(
     let handle = core.handle();
     let client = Client::configure().build(&handle);
 
-    let bytes = batch_list.write_to_bytes()?;
+    //let bytes = batch_list.write_to_bytes()?;
 
     let mut req = Request::new(Method::Get, hyper_uri);
     req.headers_mut().set(ContentType::octet_stream());
