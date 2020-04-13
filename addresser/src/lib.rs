@@ -39,7 +39,7 @@ pub enum ResourceError {
 ////from handler
 const NAMESPACE: &'static str = "cad11d";
 
-fn compute_address(name: &str, resource: Resource) -> String {
+pub fn compute_address(name: &str, resource: Resource) -> String {
     let mut sha = Sha512::new();
     sha.input(name.as_bytes());
 
