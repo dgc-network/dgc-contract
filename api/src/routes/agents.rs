@@ -39,6 +39,7 @@ use transaction::{
     submit_batch_list};
 //use submit::submit_batch_list;
 use addresser::{compute_agent_address};
+use addresser::{resource_to_byte, Resource};
 
 use hyper::Client;
 use hyper::body::HttpBody as _;
@@ -193,7 +194,7 @@ struct UpdateAgentData {
 */
 }
 
-#[put("/agent", format = "json", data = "<agent>")]
+#[put("/agent", format = "json", data = "<update_agent>")]
 pub fn put_agent(
     update_agent: Json<UpdateAgent>,
     //agent: Json<UpdateAgent>,
@@ -304,29 +305,79 @@ pub fn post_agents_login(
         .ok_or_else(|| Errors::new(&[("email or password", "is invalid")]))
 }
 
+const NAMESPACE: &'static str = "cad11d";
+
+fn compute_address(name: &str, resource: Resource) -> String {
+    let mut sha = Sha512::new();
+    sha.input(name.as_bytes());
+
+    String::from(NAMESPACE) + &resource_to_byte(resource) + &sha.result_str()[..62].to_string()
+}
+
 #[get("/agent/<public_key>")]
 pub fn get_agent(
     public_key: String,
 ) -> Result<JsonValue, Errors> {
+/*
+    GET /state
+    Fetch a paginated list of leaves for the current state, or relative to a particular head block
 
-    // Previously...
-    let client = Client::new();
-/*    
-    let url = "http://dgc-api:9001";
-    submit_batch_list(
-        &format!("{}/batches?wait=120", url),
-        &batch_list);
+    GET /state/{address}
+    Fetch a particular leaf from the current state
 */
-    let uri = "http://httpbin.org/ip".parse()?;
-    let mut resp = client.get(uri).await?;
-    println!("Response: {}", resp.status());
 
-    // And now...
-    while let Some(chunk) = resp.body_mut().data().await {
-        stdout().write_all(&chunk?).await?;
+    let address = compute_address(public_key, Resource::AGENT);
+
+    let url = "http://dgc-api:9001" + "/state/" + address;
+
+    let hyper_uri = match url.parse::<hyper::Uri>() {
+        Ok(uri) => uri,
+        Err(e) => return Err(CliError::UserError(format!("Invalid URL: {}: {}", e, url))),
+    };
+
+    match hyper_uri.scheme() {
+        Some(scheme) => {
+            if scheme != "http" {
+                return Err(CliError::UserError(format!(
+                    "Unsupported scheme ({}) in URL: {}",
+                    scheme, url
+                )));
+            }
+        }
+        None => {
+            return Err(CliError::UserError(format!("No scheme in URL: {}", url)));
+        }
     }
 
-    Ok(json!({ "getAgent": "done" }))
+    let mut core = tokio_core::reactor::Core::new()?;
+    let handle = core.handle();
+    let client = Client::configure().build(&handle);
+
+    let bytes = batch_list.write_to_bytes()?;
+
+    let mut req = Request::new(Method::Get, hyper_uri);
+    req.headers_mut().set(ContentType::octet_stream());
+    req.headers_mut().set(ContentLength(bytes.len() as u64));
+    req.set_body(bytes);
+
+    let work = client.request(req).and_then(|res| {
+        res.body()
+            .fold(Vec::new(), |mut v, chunk| {
+                v.extend(&chunk[..]);
+                future::ok::<_, hyper::Error>(v)
+            })
+            .and_then(move |chunks| {
+                let body = String::from_utf8(chunks).unwrap();
+                future::ok(body)
+            })
+    });
+
+    let body = core.run(work)?;
+    println!("Response Body:\n{}", body);
+
+    Ok(())
+
+    //Ok(json!({ "getAgent": "done" }))
 }
 //pub fn get_agent(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<JsonValue> {
 //    db::users::find(&conn, auth.id).map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
