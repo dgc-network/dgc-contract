@@ -27,6 +27,8 @@ extern crate hyper;
 extern crate addresser;
 extern crate futures;
 extern crate tokio_core;
+extern crate reqwest;
+extern crate tokio;
 
 mod auth;
 mod config;

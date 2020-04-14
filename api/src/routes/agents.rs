@@ -93,7 +93,7 @@ pub fn post_agents(
     let private_key = context.new_random_private_key()
         .expect("Error generating a new Private Key");
     let factory = signing::CryptoFactory::new(context.as_ref());
-    let signer = factory.new_signer(&private_key);
+    let signer = factory.new_signer(&private_key)
         .expect("Error generating a new signer");
     let public_key = signer.get_public_key()
         .expect("Error retrieving Public Key")
