@@ -86,3 +86,4 @@ random-suffix = []
 
 [build-dependencies]
 protoc-rust = "2"
+protobuf_codegen_pure = "1.5"
