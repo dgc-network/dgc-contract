@@ -41,9 +41,18 @@ use transaction::{
 use addresser::{compute_agent_address, compute_address};
 use addresser::{resource_to_byte, Resource};
 
-use hyper::Client;
-use hyper::body::HttpBody as _;
-use tokio::io::{stdout, AsyncWriteExt as _};
+use hyper;
+use hyper::Method;
+use hyper::client::{Client, Request};
+use hyper::header::{ContentLength, ContentType};
+use std::str;
+use futures::{future, Future};
+use futures::Stream;
+use tokio_core;
+
+//use hyper::Client;
+//use hyper::body::HttpBody as _;
+//use tokio::io::{stdout, AsyncWriteExt as _};
 
 //use rocket::Outcome;
 //use rocket::http::Status;
@@ -149,11 +158,8 @@ pub fn post_agents(
     let batch = create_batch(txn, &signer, &public_key)
         .expect("Error create batch");
     let batch_list = create_batch_list_from_one(batch);
-
     let url = "http://dgc-api:9001";
-    submit_batch_list(
-        &format!("{}/batches?wait=120", url),
-        &batch_list);
+    submit_batch_list(&format!("{}/batches?wait=120", url),&batch_list);
 
     Ok(json!({ "createAgent": "done" }))
 
@@ -267,11 +273,8 @@ pub fn put_agent(
     let batch = create_batch(txn, &signer, &public_key)
         .expect("Error create batch");
     let batch_list = create_batch_list_from_one(batch);
-
     let url = "http://dgc-api:9001";
-    submit_batch_list(
-        &format!("{}/batches?wait=120", url),
-        &batch_list);
+    submit_batch_list(&format!("{}/batches?wait=120", url),&batch_list);
 
     Ok(json!({ "updateAgent": "done" }))
 
