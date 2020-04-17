@@ -1,7 +1,7 @@
 // Copyright (c) The dgc.network
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::auth::Auth;
+//use crate::auth::Auth;
 use crate::config::AppState;
 use crate::db::{self, users::UserCreationError};
 use crate::errors::{Errors, FieldValidator};
@@ -49,6 +49,8 @@ use std::str;
 use futures::{future, Future};
 use futures::Stream;
 use tokio_core;
+
+use error::CliError;
 
 //use hyper::Client;
 //use hyper::body::HttpBody as _;
@@ -102,8 +104,8 @@ pub fn post_agents(
     let private_key = context.new_random_private_key()
         .expect("Error generating a new Private Key");
     let factory = signing::CryptoFactory::new(context.as_ref());
-    let signer = factory.new_signer(&private_key)
-        .expect("Error generating a new signer");
+    let signer = factory.new_signer(private_key);
+//        .expect("Error generating a new signer");
     let public_key = signer.get_public_key()
         .expect("Error retrieving Public Key")
         .as_hex();
@@ -352,8 +354,8 @@ pub fn get_agent(
 
     let mut req = Request::new(Method::Get, hyper_uri);
     req.headers_mut().set(ContentType::octet_stream());
-    req.headers_mut().set(ContentLength(bytes.len() as u64));
-    req.set_body(bytes);
+    //req.headers_mut().set(ContentLength(bytes.len() as u64));
+    //req.set_body(bytes);
 
     let work = client.request(req).and_then(|res| {
         res.body()

@@ -18,7 +18,7 @@ use sawtooth_sdk::messages::transaction::Transaction;
 use sawtooth_sdk::messages::transaction::TransactionHeader;
 use sawtooth_sdk::signing::Signer;
 
-use addresser::{resource_to_byte, Resource};
+//use addresser::{resource_to_byte, Resource};
 
 use hyper;
 use hyper::Method;
